@@ -5,11 +5,16 @@ class Status(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
 
+    def __str__(self):
+        return self.name
+
 
 class Season(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание сезона')
 
+    def __str__(self):
+        return self.name
 
 class Tour(models.Model):
     id = models.CharField(max_length=255, verbose_name="Пользовательский ID", primary_key=True)
@@ -36,6 +41,9 @@ class Option(models.Model):
     time_create = models.DateTimeField()
     time_update = models.DateTimeField()
 
+    def __str__(self):
+        return self.name
+
 
 class Image(models.Model):
     tour_image = models.ForeignKey(Tour, on_delete=models.CASCADE)
@@ -51,8 +59,11 @@ class AdditionalOption(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     price = models.IntegerField(verbose_name='Цена')
-    time_create = models.DateTimeField()
-    time_update = models.DateTimeField()
+    time_create = models.DateTimeField(verbose_name='Дата создания')
+    time_update = models.DateTimeField(verbose_name='Дата обновления')
+
+    def __str__(self):
+        return self.name
 
 
 class Order(models.Model):
@@ -62,6 +73,9 @@ class Order(models.Model):
     code = models.CharField(verbose_name='Код')
     time_created = models.DateTimeField()
     time_update = models.DateTimeField()
+
+    def __str__(self):
+        return self.tour
 
 
 class OrderItem(models.Model):
@@ -74,11 +88,17 @@ class OrderItem(models.Model):
     is_primary_contact = models.BooleanField()
     verification_code = models.IntegerField(verbose_name='Код верификации')
 
+    def __str__(self):
+        return self.order
+
 
 class TourDay(models.Model):
     day = models.IntegerField()
     description = models.TextField()
     photo = models.CharField(max_length=255, verbose_name='AWS S3 Фото')
+
+    def __str__(self):
+        return self.day
 
 
 class TourDayOption(models.Model):
@@ -89,6 +109,14 @@ class TourDayOption(models.Model):
     date_end = models.DateTimeField()
     is_landmark = models.BooleanField()
 
+    def __str__(self):
+        return self.name
+
 
 class TourProgram(models.Model):
     tour = models.ManyToManyField(Tour)
+    tour_day = models.ManyToManyField(TourDay)
+    tour_option = models.ManyToManyField(TourDayOption)
+
+    def __str__(self):
+        return self.tour
