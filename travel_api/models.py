@@ -65,7 +65,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     place_number = models.IntegerField(verbose_name='Номер места')
     name = models.CharField(verbose_name='Имя')
     surname = models.CharField(verbose_name='Фамилия')
