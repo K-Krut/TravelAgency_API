@@ -16,6 +16,7 @@ class Season(models.Model):
     def __str__(self):
         return self.name
 
+
 class Tour(models.Model):
     id = models.CharField(max_length=255, verbose_name="Пользовательский ID", primary_key=True)
     name = models.CharField(max_length=255, verbose_name='Название')
@@ -46,7 +47,7 @@ class Option(models.Model):
 
 
 class Image(models.Model):
-    tour_image = models.ForeignKey(Tour, on_delete=models.CASCADE)
+    tour_image = models.ForeignKey(Tour, related_name='images', on_delete=models.CASCADE)
     aws_url = models.CharField(max_length=255, verbose_name="Ссылка на AWS")
     is_main = models.BooleanField(verbose_name='Главное фото')
 
