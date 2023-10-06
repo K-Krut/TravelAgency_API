@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from travel_api import views
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('api/v1/tours', views.ToursList.as_view()),
 ]
