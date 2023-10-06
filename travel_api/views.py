@@ -11,5 +11,5 @@ from .serializers import *
 
 
 class ToursList(generics.ListCreateAPIView):
-    queryset = Tour.objects.all()
+    queryset = Tour.objects.order_by("name", "free_places")
     serializer_class = TourSerializer
