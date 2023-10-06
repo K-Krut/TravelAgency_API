@@ -13,6 +13,6 @@ def get_unsplash_images_from_url(url):
     return [img['src'] for img in img_tags]
 
 
-images = get_unsplash_images_from_url('https://unsplash.com/s/photos/mountains-forest?orientation=landscape&license=free' )
+images = get_unsplash_images_from_url('https://unsplash.com/s/photos/mountains-bikes' )
 print(images)
 print(len(images))
