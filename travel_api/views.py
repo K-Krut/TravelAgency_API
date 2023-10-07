@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.forms import model_to_dict
-from rest_framework import generics
 from django.shortcuts import render
+from django.db.models import Count
+
+from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -45,7 +47,7 @@ class TourSearch(generics.ListCreateAPIView):
             paginator = TourPagination()
 
             if len(request.query_params) == 0:
-                return Response({'error': 'Endpoint Error. Example: api/v1/tours/serach?name={name}'})
+                return Response({'error': 'Endpoint Error. Example: api/v1/tours/search?name={name}'})
             else:
                 queryset = Tour.objects.filter(name=request.query_params['name'])
                 page = paginator.paginate_queryset(queryset, request=request)
@@ -53,3 +55,13 @@ class TourSearch(generics.ListCreateAPIView):
         except Exception as e:
             return Response({"error": str(e)})
 
+
+class FeaturedTours(generics.ListAPIView):
+    def get(self, request):
+        queryset = Tour.objects.filter(is_featured=True)
+        sorted_query = queryset.annotate(order_count=Count('order')).order_by('-order_count')
+        paginator = TourPagination()
+
+        page = paginator.paginate_queryset(sorted_query[:4], request=request)
+
+        return paginator.get_paginated_response(FeaturedSerializer(page, many=True).data)
