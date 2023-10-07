@@ -25,12 +25,12 @@ class Tour(models.Model):
     places = models.IntegerField(verbose_name='Общее количество мест')
     free_places = models.IntegerField('Свободные места')
     is_featured = models.BooleanField()
-    date_start = models.DateTimeField(verbose_name='Дата старта')
-    date_end = models.DateTimeField(verbose_name='Дата окончания')
+    date_start = models.DateTimeField(verbose_name='Дата старта', blank=True)
+    date_end = models.DateTimeField(verbose_name='Дата окончания', blank=True)
     status = models.ManyToManyField(Status, verbose_name='Статус')
     season = models.ForeignKey(Season, on_delete=models.CASCADE, related_name="season", null=True)
-    time_create = models.DateTimeField()
-    time_update = models.DateTimeField()
+    time_create = models.DateTimeField(auto_now_add=True)
+    time_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -39,8 +39,8 @@ class Tour(models.Model):
 class Option(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название опции')
     tour = models.ManyToManyField(Tour)
-    time_create = models.DateTimeField()
-    time_update = models.DateTimeField()
+    time_create = models.DateTimeField(auto_now_add=True)
+    time_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -60,8 +60,8 @@ class AdditionalOption(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     price = models.IntegerField(verbose_name='Цена')
-    time_create = models.DateTimeField(verbose_name='Дата создания')
-    time_update = models.DateTimeField(verbose_name='Дата обновления')
+    time_create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
+    time_update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
 
     def __str__(self):
         return self.name
@@ -72,8 +72,8 @@ class Order(models.Model):
     sum = models.IntegerField(verbose_name='Сумма')
     sum_paid = models.IntegerField(verbose_name='Оплаченная сумма')
     code = models.CharField(verbose_name='Код')
-    time_created = models.DateTimeField()
-    time_update = models.DateTimeField()
+    time_created = models.DateTimeField(auto_now_add=True)
+    time_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.tour
