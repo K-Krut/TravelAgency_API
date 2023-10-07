@@ -4,14 +4,11 @@ from .models import *
 
 class TourSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
-    season = serializers.StringRelatedField(many=True)
+    season = serializers.StringRelatedField(many=False)
 
     class Meta:
         model = Tour
         fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
-
-    # TODO нужно возвращать первую существующую картинку, если нет картинки с индикатором ис меин,
-    #  а если картинок вообще нет, то не возвращать поле имеджис (я уже это сделала)
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
