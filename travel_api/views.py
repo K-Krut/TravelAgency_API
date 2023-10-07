@@ -33,3 +33,23 @@ class ToursList(generics.ListCreateAPIView):
             queryset = Tour.objects.order_by(request.query_params['sort'])
             page = paginator.paginate_queryset(queryset, request=request)
             return paginator.get_paginated_response(TourSerializer(page, many=True).data)
+
+
+class TourSearch(generics.ListCreateAPIView):
+    queryset = Tour.objects.all()
+    serializer_class = TourSerializer
+    pagination_class = TourPagination
+
+    def get(self, request):
+        try:
+            paginator = TourPagination()
+
+            if len(request.query_params) == 0:
+                return Response({'error': 'Endpoint Error. Example: api/v1/tours/serach?name={name}'})
+            else:
+                queryset = Tour.objects.filter(name=request.query_params['name'])
+                page = paginator.paginate_queryset(queryset, request=request)
+                return paginator.get_paginated_response(TourSerializer(page, many=True).data)
+        except Exception as e:
+            return Response({"error": str(e)})
+

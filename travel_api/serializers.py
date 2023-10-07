@@ -8,7 +8,7 @@ class TourSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
+        fields = ('tour_id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
