@@ -28,7 +28,7 @@ class Tour(models.Model):
     date_start = models.DateTimeField(verbose_name='Дата старта')
     date_end = models.DateTimeField(verbose_name='Дата окончания')
     status = models.ManyToManyField(Status, verbose_name='Статус')
-    season = models.ManyToManyField(Season, verbose_name='Сезон')
+    season = models.ForeignKey(Season, on_delete=models.CASCADE, related_name="season", null=True)
     time_create = models.DateTimeField()
     time_update = models.DateTimeField()
 

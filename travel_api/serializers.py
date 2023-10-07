@@ -4,7 +4,7 @@ from .models import *
 
 class TourSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
-    season = serializers.StringRelatedField(many=True)
+    season = serializers.StringRelatedField(many=False)
 
     class Meta:
         model = Tour
