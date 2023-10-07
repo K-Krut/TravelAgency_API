@@ -68,7 +68,7 @@ class AdditionalOption(models.Model):
 
 
 class Order(models.Model):
-    tour = models.ForeignKey(Tour, on_delete=models.DO_NOTHING)
+    tour = models.ForeignKey(Tour, related_name='order', on_delete=models.DO_NOTHING)
     sum = models.IntegerField(verbose_name='Сумма')
     sum_paid = models.IntegerField(verbose_name='Оплаченная сумма')
     code = models.CharField(verbose_name='Код')
@@ -76,7 +76,7 @@ class Order(models.Model):
     time_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.tour
+        return self.tour.name
 
 
 class OrderItem(models.Model):
