@@ -18,7 +18,7 @@ class Season(models.Model):
 
 
 class Tour(models.Model):
-    id = models.CharField(max_length=255, verbose_name="Пользовательский ID", primary_key=True)
+    tour_id = models.CharField(max_length=255, verbose_name="Пользовательский ID", primary_key=True)
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     price = models.IntegerField(verbose_name='Цена тура')
@@ -99,7 +99,7 @@ class TourDay(models.Model):
     photo = models.CharField(max_length=255, verbose_name='AWS S3 Фото')
 
     def __str__(self):
-        return self.day
+        return str(self.day)
 
 
 class TourDayOption(models.Model):
