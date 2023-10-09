@@ -24,8 +24,10 @@ SECRET_KEY = "django-insecure-2jz4h_#35psowa*h(ofq%@%9q98syy8v!rw$_+s3=es-i^%z1s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
+    '127.0.0.1'
+]
 
 # Application definition
 
@@ -76,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "TravelAgency_API.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -90,7 +91,6 @@ DATABASES = {
         'PORT': '7348',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -110,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -121,7 +120,6 @@ TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
