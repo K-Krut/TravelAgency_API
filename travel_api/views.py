@@ -65,3 +65,9 @@ class FeaturedTours(generics.ListAPIView):
         page = paginator.paginate_queryset(sorted_query[:4], request=request)
 
         return paginator.get_paginated_response(FeaturedSerializer(page, many=True).data)
+
+
+class DetailsTour(APIView):
+    def get(self, request):
+        a = Tour.objects.get(id=5)
+        return Response(DetailsSerializer(a, many=False).data)

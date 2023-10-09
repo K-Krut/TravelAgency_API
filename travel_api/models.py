@@ -18,7 +18,7 @@ class Season(models.Model):
 
 
 class Tour(models.Model):
-    tour_id = models.CharField(max_length=255, verbose_name="Пользовательский ID", primary_key=True)
+    tour_id = models.CharField(max_length=255, verbose_name="Пользовательский ID")
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     price = models.IntegerField(verbose_name='Цена тура')
@@ -38,9 +38,12 @@ class Tour(models.Model):
 
 class Option(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название опции')
-    tour = models.ManyToManyField(Tour)
+    tour = models.ManyToManyField(Tour, related_name='option')
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
+    is_landmark = models.BooleanField(null=True)
+    image_url = models.CharField(max_length=255, null=True)
+    icon = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return self.name
@@ -62,6 +65,7 @@ class AdditionalOption(models.Model):
     price = models.IntegerField(verbose_name='Цена')
     time_create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     time_update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
+    icon = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return self.name
@@ -119,5 +123,3 @@ class TourProgram(models.Model):
     tour_day = models.ManyToManyField(TourDay)
     tour_option = models.ManyToManyField(TourDayOption)
 
-    def __str__(self):
-        return self.tour
