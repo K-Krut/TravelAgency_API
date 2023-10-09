@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.forms.models import model_to_dict
 from .models import *
 
 
@@ -38,3 +39,25 @@ class FeaturedSerializer(serializers.ModelSerializer):
         if not representation['images']:
             representation.pop('images')
         return representation
+
+
+
+class OptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+        fields = ('name', 'image_url')
+
+
+class DetailsSerializer(serializers.ModelSerializer):
+    season = serializers.StringRelatedField(many=False)
+    images = serializers.StringRelatedField(many=True)
+    landmarks = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tour
+        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images', 'landmarks')
+
+    def get_landmarks(self, obj):
+        landmark = obj.option.filter(is_landmark=True).values()
+
+        return landmark
