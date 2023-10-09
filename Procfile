@@ -1,0 +1,1 @@
+web: gunicorn TravelAgency_API.wsgi
