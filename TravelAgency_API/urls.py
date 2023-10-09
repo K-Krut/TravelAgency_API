@@ -22,6 +22,7 @@ from travel_api import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/v1/tours', views.ToursList.as_view()),
-    path('api/v1/tours/search', views.DetailsTour.as_view()),
-    path('api/v1/tours/featured', views.FeaturedTours.as_view())
+    path('api/v1/tours/search', views.TourSearch.as_view()),
+    path('api/v1/tours/featured', views.FeaturedTours.as_view()),
+    path('api/v1/tours/<int:id>/', views.DetailsTour.as_view())
 ]

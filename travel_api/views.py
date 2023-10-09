@@ -68,6 +68,7 @@ class FeaturedTours(generics.ListAPIView):
 
 
 class DetailsTour(APIView):
-    def get(self, request):
-        a = Tour.objects.get(id=5)
-        return Response(DetailsSerializer(a, many=False).data)
+    def get(self, request, id):
+        queryset = Tour.objects.get(id=id)
+
+        return Response(DetailsSerializer(queryset, many=False).data)
