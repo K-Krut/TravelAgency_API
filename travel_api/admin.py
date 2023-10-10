@@ -1,9 +1,18 @@
 from django.contrib import admin
 from .models import *
 
+
+class TourAdmin(admin.ModelAdmin):
+    list_display = ('name', 'date_start', 'date_end', 'price')
+    list_filter = ('season', 'is_featured')
+    ordering = ['name']
+    search_fields = ['name', 'description']
+
+
+admin.site.register(Tour, TourAdmin)
+
 admin.site.register(Status)
 admin.site.register(Season)
-admin.site.register(Tour)
 admin.site.register(Option)
 admin.site.register(Image)
 admin.site.register(AdditionalOption)
