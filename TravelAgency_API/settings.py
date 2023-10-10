@@ -47,7 +47,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DATETIME_FORMAT': '%d-%m-%Y'
+    'DATETIME_FORMAT': '%Y-%m-%d',
+    'ORDERING_PARAM': 'sort'
 }
 
 MIDDLEWARE = [
