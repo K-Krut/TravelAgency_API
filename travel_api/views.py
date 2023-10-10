@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.forms import model_to_dict
 from django.shortcuts import render
-from django.db.models import Count
+from django.db.models import Count, F, ExpressionWrapper, fields, DateField
+from datetime import timedelta
 
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
@@ -20,25 +21,56 @@ class TourPagination(PageNumberPagination):
 
 
 class ToursList(generics.ListCreateAPIView):
-    queryset = Tour.objects.order_by("name", "free_places")
+    # queryset = Tour.objects.order_by("name", "free_places")
+    # serializer_class = TourSerializer
+    # pagination_class = TourPagination
+    #
+    # def get(self, request, **kwargs):
+    #     queryset = Tour.objects.all()
+    #     paginator = TourPagination()
+    #
+    #     if len(request.query_params) == 0:
+    #         page = paginator.paginate_queryset(queryset, request=request)
+    #         return paginator.get_paginated_response(TourSerializer(page, many=True).data)
+    #     try:
+    #         queryset = Tour.objects.order_by(request.query_params['sort'])
+    #         page = paginator.paginate_queryset(queryset, request=request)
+    #         return paginator.get_paginated_response(TourSerializer(page, many=True).data)
+    #     except:
+    #         page = paginator.paginate_queryset(queryset, request=request)
+    #         return paginator.get_paginated_response(TourSerializer(page, many=True).data)
     serializer_class = TourSerializer
     pagination_class = TourPagination
+    ordering_fields = ['name', 'free_places', 'price', 'date_start']
+    ordering = ['name', 'free_places']
 
-    def get(self, request, **kwargs):
-        queryset = Tour.objects.all()
-        paginator = TourPagination()
+    def get_queryset(self):
+        queryset = Tour.objects.all().order_by(*self.ordering)
 
-        if len(request.query_params) == 0:
-            page = paginator.paginate_queryset(queryset, request=request)
-            return paginator.get_paginated_response(TourSerializer(page, many=True).data)
-        else:
-            try:
-                queryset = Tour.objects.order_by(request.query_params['sort'])
-                page = paginator.paginate_queryset(queryset, request=request)
-                return paginator.get_paginated_response(TourSerializer(page, many=True).data)
-            except:
-                page = paginator.paginate_queryset(queryset, request=request)
-                return paginator.get_paginated_response(TourSerializer(page, many=True).data)
+        seasons = self.request.query_params.getlist('season', [])
+        if seasons:
+            queryset = queryset.filter(season__name__in=seasons)
+
+        durations = self.request.query_params.getlist('duration', [])
+        if durations:
+            queryset = Tour.objects.annotate(
+                duration=ExpressionWrapper(
+                    F('date_end') - F('date_start'),
+                    output_field=fields.DurationField()
+                )
+            ).filter(duration__in=[timedelta(days=dur) for dur in durations])
+            print(Tour.objects.annotate(
+                duration=ExpressionWrapper(F('date_end') - F('date_start'), output_field=fields.DurationField())
+            ))
+            print(Tour.objects.annotate(
+                duration=ExpressionWrapper(F('date_end') - F('date_start'), output_field=fields.DurationField())
+            ).filter(duration__in=[timedelta(days=dur) for dur in durations]))
+
+        ordering = self.request.query_params.get('ordering', '')
+        if ordering:
+            queryset = queryset.order_by(ordering)
+
+        return queryset
 
 
 class TourSearch(generics.ListCreateAPIView):
