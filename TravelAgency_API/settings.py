@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'travel_api.apps.TravelApiConfig',
+    'django_filters',
     'rest_framework',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -44,7 +45,9 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 100,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DATETIME_FORMAT': '%d-%m-%Y'
 }
 
 MIDDLEWARE = [
@@ -118,6 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "ru"
 
 TIME_ZONE = "Europe/Moscow"
+
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
 USE_I18N = True
 
