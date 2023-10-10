@@ -32,9 +32,13 @@ class ToursList(generics.ListCreateAPIView):
             page = paginator.paginate_queryset(queryset, request=request)
             return paginator.get_paginated_response(TourSerializer(page, many=True).data)
         else:
-            queryset = Tour.objects.order_by(request.query_params['sort'])
-            page = paginator.paginate_queryset(queryset, request=request)
-            return paginator.get_paginated_response(TourSerializer(page, many=True).data)
+            try:
+                queryset = Tour.objects.order_by(request.query_params['sort'])
+                page = paginator.paginate_queryset(queryset, request=request)
+                return paginator.get_paginated_response(TourSerializer(page, many=True).data)
+            except:
+                page = paginator.paginate_queryset(queryset, request=request)
+                return paginator.get_paginated_response(TourSerializer(page, many=True).data)
 
 
 class TourSearch(generics.ListCreateAPIView):
@@ -68,6 +72,7 @@ class FeaturedTours(generics.ListAPIView):
 
 
 class DetailsTour(APIView):
-    def get(self, request):
-        a = Tour.objects.get(id=5)
-        return Response(DetailsSerializer(a, many=False).data)
+    def get(self, request, id):
+        queryset = Tour.objects.get(id=id)
+
+        return Response(DetailsSerializer(queryset, many=False).data)

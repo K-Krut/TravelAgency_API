@@ -59,7 +59,7 @@ class Image(models.Model):
 
 
 class AdditionalOption(models.Model):
-    tour = models.ManyToManyField(Tour, verbose_name='Тур')
+    tour = models.ManyToManyField(Tour, verbose_name='Тур', related_name='adoption')
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     price = models.IntegerField(verbose_name='Цена')
@@ -119,7 +119,7 @@ class TourDayOption(models.Model):
 
 
 class TourProgram(models.Model):
-    tour = models.ManyToManyField(Tour)
+    tour = models.ManyToManyField(Tour, related_name='program')
     tour_day = models.ManyToManyField(TourDay)
     tour_option = models.ManyToManyField(TourDayOption)
 
