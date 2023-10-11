@@ -5,3 +5,5 @@
 /.idea/.gitignore
 /.idea/TravelAgency_API.iml
 /images_faking/test.py
+/.idea/vcs.xml
+/.idea/dataSources.xml

@@ -53,7 +53,7 @@ class Option(models.Model):
 
 
 class Image(models.Model):
-    tour_image = models.ForeignKey(Tour, related_name='images', on_delete=models.CASCADE)
+    tour_image = models.ForeignKey(Tour, related_name='images', on_delete=models.CASCADE, primary_key=models.UUIDField())
     aws_url = models.CharField(max_length=255, verbose_name="Ссылка на AWS")
     is_main = models.BooleanField(verbose_name='Главное фото')
 
