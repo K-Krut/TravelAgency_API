@@ -4,8 +4,8 @@ from .models import *
 
 class TourAdmin(admin.ModelAdmin):
     list_display = ('name', 'date_start', 'date_end', 'price_with_currency')
-    list_filter = ('season', 'is_featured')
-    ordering = ['name']
+    list_filter = ('season', 'is_featured', 'date_start', 'status')
+    ordering = ['status', 'name']
     search_fields = ['name', 'description']
 
 
