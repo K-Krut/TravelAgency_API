@@ -18,17 +18,16 @@ class Season(models.Model):
 
 
 class Tour(models.Model):
-    tour_id = models.CharField(max_length=255, verbose_name="Пользовательский ID")
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     price = models.IntegerField(verbose_name='Цена тура')
     places = models.IntegerField(verbose_name='Общее количество мест')
     free_places = models.IntegerField('Свободные места')
     is_featured = models.BooleanField()
-    date_start = models.DateTimeField(verbose_name='Дата старта', blank=True)
-    date_end = models.DateTimeField(verbose_name='Дата окончания', blank=True)
-    status = models.ManyToManyField(Status, verbose_name='Статус')
-    season = models.ForeignKey(Season, on_delete=models.CASCADE, related_name="season", null=True)
+    date_start = models.DateField(verbose_name='Дата начала')
+    date_end = models.DateField(verbose_name='Дата окончания')
+    status = models.ForeignKey(Status, verbose_name='Статус', on_delete=models.DO_NOTHING)
+    season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, related_name="season", null=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
 
