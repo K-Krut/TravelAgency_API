@@ -86,3 +86,4 @@ class DetailsSerializer(serializers.ModelSerializer):
         )
 
         return program
+

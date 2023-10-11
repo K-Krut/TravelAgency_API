@@ -68,3 +68,4 @@ class DetailsTour(APIView):
         queryset = Tour.objects.get(id=id)
 
         return Response(DetailsSerializer(queryset, many=False).data)
+

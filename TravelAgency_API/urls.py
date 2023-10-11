@@ -26,3 +26,4 @@ urlpatterns = [
     path('api/v1/tours/featured', views.FeaturedTours.as_view()),
     path('api/v1/tours/<int:id>/', views.DetailsTour.as_view())
 ]
+
