@@ -45,8 +45,8 @@ class Option(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_landmark = models.BooleanField(null=True)
-    image_url = models.CharField(max_length=255, null=True)
-    icon = models.CharField(max_length=255, null=True)
+    image_url = models.CharField(max_length=500, null=True)
+    icon = models.CharField(max_length=500, null=True)
 
     def __str__(self):
         return self.name

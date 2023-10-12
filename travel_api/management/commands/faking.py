@@ -2,10 +2,11 @@ import random
 from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 from faker import Faker
-# from travel_api.models import *
+from travel_api.models import *
 from random import randint
 
 fake = Faker()
+
 
 def random_dates_within_month(year, month):
     end_date = datetime(year + 1, 1, 1) - timedelta(days=1) if month == 12 else datetime(year, month + 1,
