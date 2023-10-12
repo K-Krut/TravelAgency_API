@@ -9,7 +9,7 @@ class TourSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('tour_id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
+        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
@@ -28,7 +28,7 @@ class FeaturedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('tour_id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
+        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
@@ -39,7 +39,6 @@ class FeaturedSerializer(serializers.ModelSerializer):
         if not representation['images']:
             representation.pop('images')
         return representation
-
 
 
 class OptionSerializer(serializers.ModelSerializer):
@@ -65,11 +64,10 @@ class DetailsSerializer(serializers.ModelSerializer):
 
         return landmark
 
-
     def get_additional_options(self, obj):
         additional_options = obj.adoption.filter().values('icon', 'name')
 
-        return  additional_options
+        return additional_options
 
     def get_options(self, obj):
         options = obj.option.filter().values('name', 'icon')
@@ -88,3 +86,4 @@ class DetailsSerializer(serializers.ModelSerializer):
         )
 
         return program
+
