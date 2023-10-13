@@ -20,12 +20,12 @@ class Season(models.Model):
 class Tour(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
-    price = models.IntegerField(verbose_name='Цена тура')
-    places = models.IntegerField(verbose_name='Общее количество мест')
-    free_places = models.IntegerField('Свободные места')
-    is_featured = models.BooleanField()
-    date_start = models.DateField(verbose_name='Дата начала')
-    date_end = models.DateField(verbose_name='Дата окончания')
+    price = models.IntegerField(verbose_name='Ціна')
+    places = models.IntegerField(verbose_name='Кількість місць (Загальна)')
+    free_places = models.IntegerField('Кількість вільних місць')
+    is_featured = models.BooleanField(verbose_name='Вибраний?')
+    date_start = models.DateField(verbose_name='Дата почтаку')
+    date_end = models.DateField(verbose_name='Дата кінця')
     status = models.ForeignKey(Status, verbose_name='Статус', on_delete=models.DO_NOTHING)
     season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, related_name="season", null=True)
     time_create = models.DateTimeField(auto_now_add=True)
@@ -45,8 +45,8 @@ class Option(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_landmark = models.BooleanField(null=True)
-    image_url = models.CharField(max_length=255, null=True)
-    icon = models.CharField(max_length=255, null=True)
+    image_url = models.CharField(max_length=500, null=True)
+    icon = models.CharField(max_length=500, null=True)
 
     def __str__(self):
         return self.name
@@ -125,4 +125,5 @@ class TourProgram(models.Model):
     tour = models.ManyToManyField(Tour, related_name='program')
     tour_day = models.ManyToManyField(TourDay)
     tour_option = models.ManyToManyField(TourDayOption)
+
 
