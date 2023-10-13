@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.forms.models import model_to_dict
+from django.db.models import F, ExpressionWrapper, fields
 from .models import *
 
 
@@ -54,10 +55,11 @@ class DetailsSerializer(serializers.ModelSerializer):
     program = serializers.SerializerMethodField()
     options = serializers.SerializerMethodField()
     additional_options = serializers.SerializerMethodField()
+    duration = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
-        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images', 'landmarks', 'program', 'options', 'additional_options')
+        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images', 'landmarks', 'program', 'options', 'additional_options', 'duration')
 
     def get_landmarks(self, obj):
         landmark = obj.option.filter(is_landmark=True).values('name', 'image_url')
@@ -86,4 +88,14 @@ class DetailsSerializer(serializers.ModelSerializer):
         )
 
         return program
+
+    def get_duration(self, obj):
+        tours_with_duration = Tour.objects.annotate(
+            duration=ExpressionWrapper(
+                F('date_end') - F('date_start'),
+                output_field=fields.DurationField()
+            )
+        ).values()
+
+        return  tours_with_duration
 
