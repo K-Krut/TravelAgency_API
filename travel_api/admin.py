@@ -9,10 +9,8 @@ class TourAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
 
 
-
 class OptionAdmin(admin.ModelAdmin):
     list_display = ('name', 'id')
-
 
 
 admin.site.register(Tour, TourAdmin)
