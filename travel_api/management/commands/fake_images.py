@@ -15,12 +15,19 @@ class Command(BaseCommand):
         parser.add_argument('num_entries', type=int, help='Number of fake entries to generate')
 
     def handle(self, *args, **kwargs):
+        a = ''
+        queryset = Tour.objects.all()
         for _ in range(kwargs['num_entries']):
-            Image.objects.create(
-                # tour_image=Tour.objects.get(pk=192),
-                tour_image=random.choice(Tour.objects.all()),
-                aws_url=random.choice(images),
-                is_main=random.choice([True, False, False, False, False, False, False, False, False])
-            )
+            choice_image = random.choice(queryset)
+            if choice_image == a:
+                pass
+            else:
+                Image.objects.create(
+                    name="image.png",
+                    tour_image=choice_image,
+                    aws_url=random.choice(images),
+                    is_main=random.choice([True, False, False, False, False, False, False, False, False])
+                )
+                a = choice_image
 
         self.stdout.write(self.style.SUCCESS(f'Successfully generated fake data entries'))

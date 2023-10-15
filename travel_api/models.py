@@ -11,6 +11,9 @@ class Status(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Статусы'
+
 
 class Season(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название', validators=[MinLengthValidator(3)])
@@ -18,6 +21,9 @@ class Season(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = 'Сезоны'
 
 
 class Tour(models.Model):
@@ -41,6 +47,10 @@ class Tour(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Туры'
+        ordering = ['name']
+
 
 class Option(models.Model):
     name = models.CharField(validators=[MinLengthValidator(3)], max_length=255, verbose_name='Название опции')
@@ -54,9 +64,12 @@ class Option(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Опции'
+
 
 class Image(models.Model):
-    name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], null=True)
+    name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], null=True, default='image.png')
     tour_image = models.ForeignKey(Tour, related_name='images', on_delete=models.CASCADE, primary_key=models.UUIDField())
     aws_url = models.CharField(max_length=255, verbose_name="Ссылка на AWS")
     is_main = models.BooleanField(verbose_name='Главное фото')
@@ -65,6 +78,10 @@ class Image(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Изображения'
+        verbose_name_plural = 'Изображения'
 
 
 class AdditionalOption(models.Model):
@@ -79,6 +96,9 @@ class AdditionalOption(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Додаткові витрати'
+
 
 class Order(models.Model):
     tour = models.ForeignKey(Tour, related_name='order', on_delete=models.DO_NOTHING)
@@ -90,6 +110,9 @@ class Order(models.Model):
 
     def __str__(self):
         return self.tour.name
+
+    class Meta:
+        verbose_name_plural = 'Заказы'
 
 
 class OrderItem(models.Model):
@@ -103,16 +126,19 @@ class OrderItem(models.Model):
     verification_code = models.IntegerField(verbose_name='Код верификации')
 
     def __str__(self):
-        return self.order
+        return f"{self.name} {self.surname}"
 
 
 class TourDay(models.Model):
     day = models.CharField(max_length=255, verbose_name='Название дня')
     description = models.TextField(blank=True, verbose_name='Описание дня (необязательно поле)')
-    photo = models.URLField(verbose_name='Ссылка на AWS')
+    photo = models.URLField(verbose_name='Фото')
 
     def __str__(self):
         return str(self.day)
+
+    class Meta:
+        verbose_name_plural = 'Дни туров'
 
 
 class TourDayOption(models.Model):
@@ -126,9 +152,28 @@ class TourDayOption(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Опции дней'
+
 
 class TourProgram(models.Model):
-    tour = models.ManyToManyField(Tour, related_name='program')
-    tour_days = models.ManyToManyField(to=TourDay)
-    tour_option = models.ManyToManyField(TourDayOption)
+    tour = models.ForeignKey(to=Tour, on_delete=models.DO_NOTHING, related_name='program')
+    tour_days = models.ForeignKey(to=TourDay, on_delete=models.DO_NOTHING)
+    tour_option = models.ForeignKey(to=TourDayOption, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return self.tour.name
+
+    def name(self):
+        return self.tour.name
+    name.short_description = 'Название'
+
+    def custom_info(self):
+        return f"{self.tour.name} - {self.tour_days.day} - {self.tour_option.name}"
+    custom_info.short_description = 'Информация'
+
+    class Meta:
+        verbose_name = 'Программа туров'
+        verbose_name_plural = 'Программы туров'
+
 
