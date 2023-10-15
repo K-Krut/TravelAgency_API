@@ -79,12 +79,7 @@ class DetailsSerializer(serializers.ModelSerializer):
     def get_program(self, obj):
         program = obj.program.filter().values(
             'tour_day__day',
-            'tour_option__name',
-            'tour_option__description',
-            'tour_option__image_url',
-            'tour_option__date_start',
-            'tour_option__date_end',
-            'tour_option__is_landmark'
+            'tour_option__name'
         )
 
         return program
@@ -97,5 +92,5 @@ class DetailsSerializer(serializers.ModelSerializer):
             )
         ).values()
 
-        return  tours_with_duration
+        return tours_with_duration
 

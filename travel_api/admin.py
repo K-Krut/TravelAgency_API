@@ -9,19 +9,58 @@ class TourAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
 
 
+class TourProgramAdmin(admin.ModelAdmin):
+    list_display = ('custom_info', 'name', 'id')
+    search_fields = ['name']
+
+
+class TourDayAdmin(admin.ModelAdmin):
+    list_display = ('day', 'photo')
+    ordering = ['day']
+    search_fields = ['day']
+
+
+class AdditionalOptionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'icon')
+    ordering = ['name']
+    search_fields = ('name', 'description')
+    list_filter = ['tour']
+
+
 class OptionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id')
+    list_display = ('name', 'image_url', 'icon')
+    ordering = ['name']
+    search_fields = ['name']
+    list_filter = ['is_landmark', 'tour']
+
+
+class StatusAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    ordering = ['name']
+    search_fields = ['name']
+
+
+class SeasonAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    ordering = ['name']
+    search_fields = ['name']
+
+
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'is_main', 'aws_url')
+    ordering = ['name', 'is_main']
+    search_fields = ['name']
+    list_filter = ['is_main', 'tour_image']
 
 
 admin.site.register(Tour, TourAdmin)
-
 admin.site.register(Status)
 admin.site.register(Season)
 admin.site.register(Option, OptionAdmin)
 admin.site.register(Image)
-admin.site.register(AdditionalOption)
+admin.site.register(AdditionalOption, AdditionalOptionAdmin)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(TourDay)
 admin.site.register(TourDayOption)
-admin.site.register(TourProgram)
+admin.site.register(TourProgram, TourProgramAdmin)
