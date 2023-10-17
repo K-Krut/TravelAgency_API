@@ -78,7 +78,7 @@ class DetailsSerializer(serializers.ModelSerializer):
 
     def get_program(self, obj):
         program = obj.program.filter().values(
-            'tour_day__day',
+            'tour_days__day',
             'tour_option__name'
         )
 

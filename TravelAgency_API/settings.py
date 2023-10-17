@@ -48,7 +48,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DATETIME_FORMAT': '%Y-%m-%d',
-    'ORDERING_PARAM': 'sort'
+    'ORDERING_PARAM': 'sort',
+    'EXCEPTION_HANDLER': 'travel_api.utils.custom_exception_handler'
 }
 
 MIDDLEWARE = [
