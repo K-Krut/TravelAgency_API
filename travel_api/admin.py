@@ -12,6 +12,7 @@ class TourAdmin(admin.ModelAdmin):
 class TourProgramAdmin(admin.ModelAdmin):
     list_display = ('custom_info', 'name', 'id')
     search_fields = ['name']
+    list_filter = ['tour_days', 'tour_option', 'tour']
 
 
 class TourDayAdmin(admin.ModelAdmin):
@@ -21,7 +22,7 @@ class TourDayAdmin(admin.ModelAdmin):
 
 
 class AdditionalOptionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'icon')
+    list_display = ('name', 'price_with_currency', 'icon')
     ordering = ['name']
     search_fields = ('name', 'description')
     list_filter = ['tour']

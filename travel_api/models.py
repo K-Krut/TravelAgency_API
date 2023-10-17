@@ -86,15 +86,19 @@ class Image(models.Model):
 
 class AdditionalOption(models.Model):
     tour = models.ManyToManyField(Tour, verbose_name='Тур', related_name='adoption', blank=True)
-    name = models.CharField(max_length=255, verbose_name='Название', validators=[MinValueValidator(3)])
-    description = models.TextField(verbose_name='Описание', blank=True)
-    price = models.IntegerField(verbose_name='Цена', validators=[MinValueValidator(1)])
-    time_create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
-    time_update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
-    icon = models.URLField(max_length=255, null=True)
+    name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinValueValidator(3)])
+    description = models.TextField(verbose_name='Опис', blank=True)
+    price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(1)])
+    time_create = models.DateTimeField(verbose_name='Дата створення', auto_now_add=True)
+    time_update = models.DateTimeField(verbose_name='Дата створення', auto_now=True)
+    icon = models.URLField(max_length=255, null=True, verbose_name='Іконка')
 
     def __str__(self):
         return self.name
+
+    def price_with_currency(self):
+        return f"₴ {self.price}"
+    price_with_currency.short_description = 'Ціна'
 
     class Meta:
         verbose_name_plural = 'Додаткові витрати'

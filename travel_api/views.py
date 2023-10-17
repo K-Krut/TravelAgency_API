@@ -53,6 +53,8 @@ class TourSearch(generics.ListAPIView):
 
 
 class FeaturedTours(generics.ListAPIView):
+    queryset = Tour.objects.filter(is_featured=True)
+
     def get(self, request, **kwargs):
         queryset = Tour.objects.filter(is_featured=True)
         sorted_query = queryset.annotate(order_count=Count('order')).order_by('-order_count')
