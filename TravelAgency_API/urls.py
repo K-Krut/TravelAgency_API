@@ -17,18 +17,17 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls.i18n import i18n_patterns
 
 from django.conf import settings
 from travel_api import views
 
-urlpatterns = i18n_patterns(
+urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/v1/tours', views.ToursList.as_view()),
     path('api/v1/tours/', views.TourSearch.as_view()),
     path('api/v1/tours/featured', views.FeaturedTours.as_view()),
     path('api/v1/tours/<int:id>/', views.DetailsTour.as_view())
-)
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
