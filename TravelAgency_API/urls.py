@@ -16,14 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.i18n import i18n_patterns
 
 from travel_api import views
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
     path('api/v1/tours', views.ToursList.as_view()),
     path('api/v1/tours/', views.TourSearch.as_view()),
     path('api/v1/tours/featured', views.FeaturedTours.as_view()),
     path('api/v1/tours/<int:id>/', views.DetailsTour.as_view())
-]
+)
 

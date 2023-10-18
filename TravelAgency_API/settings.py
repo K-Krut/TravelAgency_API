@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+from django.utils.translation import gettext as _
 import os
 from pathlib import Path
 
@@ -25,14 +26,16 @@ SECRET_KEY = "django-insecure-2jz4h_#35psowa*h(ofq%@%9q98syy8v!rw$_+s3=es-i^%z1s
 DEBUG = True
 
 LANGUAGES = [
-    ('uk', 'Ukrainian'),
-    ('ru', 'Russian')
+    ('uk', _('Ukrainian')),
+    ('ru', _('Russian'))
 ]
 
 ALLOWED_HOSTS = [
     'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
     '127.0.0.1'
 ]
+
+LOCALE_PATHS = (BASE_DIR + 'locale/', )
 
 # Application definition
 
