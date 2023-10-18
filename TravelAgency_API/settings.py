@@ -24,6 +24,11 @@ SECRET_KEY = "django-insecure-2jz4h_#35psowa*h(ofq%@%9q98syy8v!rw$_+s3=es-i^%z1s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LANGUAGES = [
+    ('uk', 'Ukrainian'),
+    ('ru', 'Russian')
+]
+
 ALLOWED_HOSTS = [
     'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
     '127.0.0.1'
@@ -55,6 +60,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'django.middleware.locale.LocaleMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",

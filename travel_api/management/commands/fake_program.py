@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 from travel_api.models import *
 from .data.additional_options_images import images
+from random import choice
 
 fake = Faker()
 
@@ -26,10 +27,10 @@ class Command(BaseCommand):
             selected_tour_day_options = random.sample(all_tour_day_options,
                                                       k=random.randint(1, len(all_tour_day_options)))
 
-            tour_program = TourProgram.objects.create()
-
-            tour_program.tour.set(selected_tours)
-            tour_program.tour_day.set(selected_tour_days)
-            tour_program.tour_option.set(selected_tour_day_options)
+            tour_program = TourProgram.objects.create(
+                tour=choice(Tour.objects.all()),
+                tour_days=choice(TourDay.objects.all()),
+                tour_option=choice(TourDayOption.objects.all())
+            )
 
         self.stdout.write(self.style.SUCCESS(f'Successfully generated {num_entries} fake data entries'))
