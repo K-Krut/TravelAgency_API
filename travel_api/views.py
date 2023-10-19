@@ -1,7 +1,8 @@
 import datetime
 
 from TravelAgency_API import settings
-from liqpay.liqpay3 import LiqPay
+from liqpayapi.liqpay3 import LiqPay
+# from liqpay.liqpay3 import LiqPay
 from django.db.models import Count, F
 from django.core.exceptions import FieldError
 from django.views.generic import TemplateView, View
