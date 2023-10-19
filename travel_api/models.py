@@ -70,7 +70,7 @@ class Option(models.Model):
 
 class Image(models.Model):
     name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], null=True, default='image.png')
-    tour_image = models.ManyToManyField(to=Tour, related_name='images')
+    tour_image = models.ForeignKey(to=Tour, related_name='images', on_delete=models.DO_NOTHING, null=True)
     aws_url = models.CharField(max_length=255, verbose_name="Посилання на AWS")
     is_main = models.BooleanField(verbose_name='Головне фото')
     time_create = models.DateTimeField(auto_now_add=True, null=True)
