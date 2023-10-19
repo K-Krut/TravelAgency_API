@@ -5,6 +5,10 @@ from .models import *
 import datetime
 
 
+def check_none(obj):
+    return None if obj is None else obj.aws_url
+
+
 class TourSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     season = serializers.StringRelatedField(many=False)
@@ -15,7 +19,8 @@ class TourSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
-        return main_image.aws_url if main_image else obj.images.filter().first().aws_url
+
+        return main_image.aws_url if main_image else check_none(obj.images.filter().first())
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
