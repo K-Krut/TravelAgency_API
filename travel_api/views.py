@@ -92,7 +92,7 @@ class PayView(TemplateView):
              'amount': 1,
              'currency': 'UAH',
              'description': 'Payment for test',
-             'order_id': 'tes_id_3',
+             'order_id': 'tes_id_10',
              'version': '3',
              'sandbox': 1,  # sandbox mode, set to 1 to enable it
              'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
@@ -100,6 +100,12 @@ class PayView(TemplateView):
         signature = liqpay.cnb_signature(params)
         data = liqpay.cnb_data(params)
         html = liqpay.cnb_form(params)
+
+        print(signature)
+        print("\n\n\n")
+        print(data)
+        print('\n\n\n')
+        print(html)
 
         return render(request, self.template_name, {'signature': signature, 'data': data})
 
@@ -116,3 +122,6 @@ class PayCallbackView(View):
         response = liqpay.decode_data_from_str(data)
         print('callback data', response)
         return HttpResponse()
+
+
+

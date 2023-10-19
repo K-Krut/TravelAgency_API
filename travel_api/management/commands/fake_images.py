@@ -17,19 +17,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         a = ''
-        queryset = Tour.objects.all()
+        queryset = Tour.objects.filter()
         for _ in range(kwargs['num_entries']):
             try:
                 choice_image = random.choice(queryset)
                 if choice_image == a:
                     pass
                 else:
-                    Image.objects.create(
+                    img = Image.objects.create(
                         name="image.png",
-                        tour_image=choice_image,
                         aws_url=random.choice(images),
                         is_main=random.choice([True, False, False, False, False, False, False, False, False])
                     )
+                    img.tour_image.add(choice_image)
                     a = choice_image
             except IntegrityError:
                 continue
