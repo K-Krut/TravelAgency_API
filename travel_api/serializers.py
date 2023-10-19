@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.forms.models import model_to_dict
 from django.db.models import F, ExpressionWrapper, fields
 from .models import *
+import datetime
 
 
 class TourSerializer(serializers.ModelSerializer):
@@ -59,38 +60,24 @@ class DetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images', 'landmarks', 'program', 'options', 'additional_options', 'duration')
+        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'duration', 'images', 'landmarks', 'program', 'options', 'additional_options')
 
     def get_landmarks(self, obj):
-        landmark = obj.option.filter(is_landmark=True).values('name', 'image_url')
-
-        return landmark
+        return obj.option.filter(is_landmark=True).values('name', 'image_url')
 
     def get_additional_options(self, obj):
-        additional_options = obj.adoption.filter().values('icon', 'name')
-
-        return additional_options
+        return obj.adoption.filter().values('icon', 'name')
 
     def get_options(self, obj):
-        options = obj.option.filter().values('name', 'icon')
-
-        return options
+        return obj.option.filter().values('name', 'icon')
 
     def get_program(self, obj):
-        program = obj.program.filter().values(
-            'tour_day__day',
+        return obj.program.filter().values(
+            'tour_days__day',
             'tour_option__name'
         )
 
-        return program
-
     def get_duration(self, obj):
-        tours_with_duration = Tour.objects.annotate(
-            duration=ExpressionWrapper(
-                F('date_end') - F('date_start'),
-                output_field=fields.DurationField()
-            )
-        ).values()
+        duration = obj.date_end - obj.date_start
 
-        return tours_with_duration
-
+        return duration.days

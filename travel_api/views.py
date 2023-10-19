@@ -1,5 +1,6 @@
 import datetime
 from django.db.models import Count, F
+from django.core.exceptions import FieldError
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -39,7 +40,10 @@ class ToursList(generics.ListCreateAPIView):
 
         ordering = self.request.query_params.get('ordering', '')
         if ordering:
-            queryset = queryset.order_by(ordering)
+            try:
+                queryset = queryset.order_by(ordering)
+            except FieldError:
+                return _Response({'error': 'Sorting by incorrect field'})
 
         return queryset
 
@@ -53,6 +57,8 @@ class TourSearch(generics.ListAPIView):
 
 
 class FeaturedTours(generics.ListAPIView):
+    queryset = Tour.objects.filter(is_featured=True)
+
     def get(self, request, **kwargs):
         queryset = Tour.objects.filter(is_featured=True)
         sorted_query = queryset.annotate(order_count=Count('order')).order_by('-order_count')

@@ -24,6 +24,7 @@ SECRET_KEY = "django-insecure-2jz4h_#35psowa*h(ofq%@%9q98syy8v!rw$_+s3=es-i^%z1s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = [
     'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
     '127.0.0.1'
@@ -48,12 +49,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DATETIME_FORMAT': '%Y-%m-%d',
-    'ORDERING_PARAM': 'sort'
+    'ORDERING_PARAM': 'sort',
+    'EXCEPTION_HANDLER': 'travel_api.utils.custom_exception_handler'
 }
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'django.middleware.locale.LocaleMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -137,6 +140,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # STATIC_URL = "static/"
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 
 # Default primary key field type
