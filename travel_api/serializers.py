@@ -15,7 +15,7 @@ class TourSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
-        return main_image.aws_url if main_image else None
+        return main_image.aws_url if main_image else obj.images.filter().first().aws_url
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

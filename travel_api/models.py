@@ -70,7 +70,7 @@ class Option(models.Model):
 
 class Image(models.Model):
     name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], null=True, default='image.png')
-    tour_image = models.ForeignKey(Tour, related_name='images', on_delete=models.CASCADE, primary_key=models.UUIDField())
+    tour_image = models.ManyToManyField(to=Tour, related_name='images')
     aws_url = models.CharField(max_length=255, verbose_name="Посилання на AWS")
     is_main = models.BooleanField(verbose_name='Головне фото')
     time_create = models.DateTimeField(auto_now_add=True, null=True)
@@ -131,6 +131,9 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.surname}"
+
+    class Meta:
+        verbose_name_plural = "Пасажири замовлення"
 
 
 class TourDay(models.Model):
