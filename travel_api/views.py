@@ -1,8 +1,14 @@
 import datetime
+
+from TravelAgency_API import settings
+from liqpay.liqpay3 import LiqPay
 from django.db.models import Count, F
 from django.core.exceptions import FieldError
-
+from django.views.generic import TemplateView, View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import render
 
 from rest_framework import filters
 from rest_framework import generics
@@ -86,7 +92,7 @@ class PayView(TemplateView):
              'amount': 1,
              'currency': 'UAH',
              'description': 'Payment for test',
-             'order_id': 'tes_id_2',
+             'order_id': 'tes_id_3',
              'version': '3',
              'sandbox': 1,  # sandbox mode, set to 1 to enable it
              'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
@@ -94,6 +100,7 @@ class PayView(TemplateView):
         signature = liqpay.cnb_signature(params)
         data = liqpay.cnb_data(params)
         html = liqpay.cnb_form(params)
+
         return render(request, self.template_name, {'signature': signature, 'data': data})
 
 
