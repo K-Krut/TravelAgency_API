@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import *
 
 
@@ -22,10 +23,13 @@ class TourDayAdmin(admin.ModelAdmin):
 
 
 class AdditionalOptionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price_with_currency', 'icon')
+    list_display = ('name', 'price', 'icon')
     ordering = ['name']
     search_fields = ('name', 'description')
     list_filter = ['tour']
+
+    # def get_icon(self, obj):
+    #     return mark_safe(f'<img src={obj.icon} width="50" height="60">')
 
 
 class OptionAdmin(admin.ModelAdmin):
@@ -55,13 +59,13 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tour, TourAdmin)
-admin.site.register(Status)
-admin.site.register(Season)
+admin.site.register(Status, StatusAdmin)
+admin.site.register(Season, SeasonAdmin)
 admin.site.register(Option, OptionAdmin)
-admin.site.register(Image)
+admin.site.register(Image, ImageAdmin)
 admin.site.register(AdditionalOption, AdditionalOptionAdmin)
 admin.site.register(Order)
 admin.site.register(OrderItem)
-admin.site.register(TourDay)
+admin.site.register(TourDay, TourDayAdmin)
 admin.site.register(TourDayOption)
 admin.site.register(TourProgram, TourProgramAdmin)
