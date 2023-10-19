@@ -26,7 +26,9 @@ urlpatterns = [
     path('api/v1/tours', views.ToursList.as_view()),
     path('api/v1/tours/', views.TourSearch.as_view()),
     path('api/v1/tours/featured', views.FeaturedTours.as_view()),
-    path('api/v1/tours/<int:id>/', views.DetailsTour.as_view())
+    path('api/v1/tours/<int:id>/', views.DetailsTour.as_view()),
+    path(r'pay', PayView.as_view(), name='pay_view'),
+    path(r'pay-callback', PayCallbackView.as_view(), name='pay_callback'),
 ]
 
 if settings.DEBUG:
