@@ -101,6 +101,9 @@ DATABASES = {
     }
 }
 
+LIQPAY_PUBLIC_KEY = 'sandbox_i19318155047'
+LIQPAY_PRIVATE_KEY = 'sandbox_fO53arKOsERqttKl5RWMEohhDUJbvFxCyEy062iD'
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

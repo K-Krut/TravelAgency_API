@@ -75,3 +75,37 @@ class DetailsTour(APIView):
 
         return Response(DetailsSerializer(queryset, many=False).data)
 
+
+class PayView(TemplateView):
+    template_name = 'billing/pay.html'
+
+    def get(self, request, *args, **kwargs):
+        liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        params = {
+             'action': 'pay',
+             'amount': 1,
+             'currency': 'UAH',
+             'description': 'Payment for test',
+             'order_id': 'tes_id_2',
+             'version': '3',
+             'sandbox': 1,  # sandbox mode, set to 1 to enable it
+             'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
+        }
+        signature = liqpay.cnb_signature(params)
+        data = liqpay.cnb_data(params)
+        html = liqpay.cnb_form(params)
+        return render(request, self.template_name, {'signature': signature, 'data': data})
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class PayCallbackView(View):
+    def post(self, request, *args, **kwargs):
+        liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        data = request.POST.get('data')
+        signature = request.POST.get('signature')
+        sign = liqpay.str_to_sign(settings.LIQPAY_PRIVATE_KEY + data + settings.LIQPAY_PRIVATE_KEY)
+        if sign == signature:
+            print('callback is valid')
+        response = liqpay.decode_data_from_str(data)
+        print('callback data', response)
+        return HttpResponse()
