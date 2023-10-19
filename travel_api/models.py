@@ -5,30 +5,30 @@ from datetime import datetime
 
 
 class Status(models.Model):
-    name = models.CharField(max_length=255, verbose_name='Название', validators=[MinLengthValidator(3)])
-    description = models.TextField(verbose_name='Описание', blank=True)
+    name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinLengthValidator(3)])
+    description = models.TextField(verbose_name='Опис', blank=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Статусы'
+        verbose_name_plural = 'Статуси'
 
 
 class Season(models.Model):
-    name = models.CharField(max_length=255, verbose_name='Название', validators=[MinLengthValidator(3)])
-    description = models.TextField(verbose_name='Описание сезона', blank=True)
+    name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinLengthValidator(3)])
+    description = models.TextField(verbose_name='Опис сезону', blank=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Сезоны'
+        verbose_name_plural = 'Сезони'
 
 
 class Tour(models.Model):
-    name = models.CharField(max_length=255, verbose_name='Название', validators=[MinLengthValidator(3)])
-    description = models.TextField(verbose_name='Описание', blank=True)
+    name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinLengthValidator(3)])
+    description = models.TextField(verbose_name='Опис', blank=True)
     price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(1)])
     places = models.IntegerField(verbose_name='Кількість місць (Загальна)', validators=[MinValueValidator(1)])
     free_places = models.IntegerField('Кількість вільних місць', validators=[MinValueValidator(1)])
@@ -48,12 +48,12 @@ class Tour(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Туры'
+        verbose_name_plural = 'Тури'
         ordering = ['name']
 
 
 class Option(models.Model):
-    name = models.CharField(validators=[MinLengthValidator(3)], max_length=255, verbose_name='Название опции')
+    name = models.CharField(validators=[MinLengthValidator(3)], max_length=255, verbose_name='Назва опції')
     tour = models.ManyToManyField(Tour, related_name='option', blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
@@ -65,14 +65,14 @@ class Option(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Опции'
+        verbose_name_plural = 'Опції'
 
 
 class Image(models.Model):
     name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], null=True, default='image.png')
     tour_image = models.ForeignKey(Tour, related_name='images', on_delete=models.CASCADE, primary_key=models.UUIDField())
-    aws_url = models.CharField(max_length=255, verbose_name="Ссылка на AWS")
-    is_main = models.BooleanField(verbose_name='Главное фото')
+    aws_url = models.CharField(max_length=255, verbose_name="Посилання на AWS")
+    is_main = models.BooleanField(verbose_name='Головне фото')
     time_create = models.DateTimeField(auto_now_add=True, null=True)
     time_update = models.DateTimeField(auto_now=True, null=True)
 
@@ -80,8 +80,8 @@ class Image(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'Изображения'
-        verbose_name_plural = 'Изображения'
+        verbose_name = 'Зображення'
+        verbose_name_plural = 'Зображення'
 
 
 class AdditionalOption(models.Model):
@@ -106,8 +106,8 @@ class AdditionalOption(models.Model):
 
 class Order(models.Model):
     tour = models.ForeignKey(Tour, related_name='order', on_delete=models.DO_NOTHING)
-    sum = models.IntegerField(verbose_name='Сумма')
-    sum_paid = models.IntegerField(verbose_name='Оплаченная сумма')
+    sum = models.IntegerField(verbose_name='Сума')
+    sum_paid = models.IntegerField(verbose_name='Сплачена сума')
     code = models.CharField(verbose_name='Код')
     time_created = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
@@ -116,37 +116,37 @@ class Order(models.Model):
         return self.tour.name
 
     class Meta:
-        verbose_name_plural = 'Заказы'
+        verbose_name_plural = 'Замовлення'
 
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     place_number = models.IntegerField(verbose_name='Номер места')
-    name = models.CharField(verbose_name='Имя')
-    surname = models.CharField(verbose_name='Фамилия')
-    phone = models.CharField(verbose_name='Номер телефона')
-    sum = models.IntegerField(verbose_name='Сумма')
+    name = models.CharField(verbose_name="Ім'я")
+    surname = models.CharField(verbose_name='Прізвище')
+    phone = models.CharField(verbose_name='Номер телефону')
+    sum = models.IntegerField(verbose_name='Сума')
     is_primary_contact = models.BooleanField()
-    verification_code = models.IntegerField(verbose_name='Код верификации')
+    verification_code = models.IntegerField(verbose_name='Код верифікації')
 
     def __str__(self):
         return f"{self.name} {self.surname}"
 
 
 class TourDay(models.Model):
-    day = models.CharField(max_length=255, verbose_name='Название дня')
-    description = models.TextField(blank=True, verbose_name='Описание дня (необязательно поле)')
+    day = models.CharField(max_length=255, verbose_name='Назва дня')
+    description = models.TextField(blank=True, verbose_name='Опис дня (необязательно поле)')
     photo = models.URLField(verbose_name='Фото')
 
     def __str__(self):
         return str(self.day)
 
     class Meta:
-        verbose_name_plural = 'Дни туров'
+        verbose_name_plural = 'Дні турів'
 
 
 class TourDayOption(models.Model):
-    name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], verbose_name='Название')
+    name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], verbose_name='Назва')
     description = models.TextField(blank=True)
     image_url = models.URLField(null=True)
     date_start = models.DateTimeField(blank=True)
@@ -157,7 +157,7 @@ class TourDayOption(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Опции дней'
+        verbose_name_plural = 'Опції днів'
 
 
 class TourProgram(models.Model):
@@ -170,14 +170,14 @@ class TourProgram(models.Model):
 
     def name(self):
         return self.tour.name
-    name.short_description = 'Название'
+    name.short_description = 'Назва'
 
     def custom_info(self):
         return f"{self.tour.name} - {self.tour_days.day} - {self.tour_option.name}"
-    custom_info.short_description = 'Информация'
+    custom_info.short_description = 'Інформація'
 
     class Meta:
-        verbose_name = 'Программа туров'
-        verbose_name_plural = 'Программы туров'
+        verbose_name = 'Програма турів'
+        verbose_name_plural = 'Програми турів'
 
 
