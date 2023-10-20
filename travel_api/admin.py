@@ -58,14 +58,28 @@ class ImageAdmin(admin.ModelAdmin):
     list_filter = ['is_main', 'tour_image']
 
 
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['order', 'name', 'surname', 'phone', 'verification_code', 'is_primary_contact']
+    ordering = ['time_create']
+    search_fields = ['name', 'surname', 'phone']
+    list_filter = ['is_primary_contact', 'order']
+
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['code', 'tour', 'sum_paid', 'time_created']
+    ordering = ['time_created']
+    search_fields = ['name', 'description']
+    list_filter = ['tour']
+
+
 admin.site.register(Tour, TourAdmin)
 admin.site.register(Status, StatusAdmin)
 admin.site.register(Season, SeasonAdmin)
 admin.site.register(Option, OptionAdmin)
 admin.site.register(Image, ImageAdmin)
 admin.site.register(AdditionalOption, AdditionalOptionAdmin)
-admin.site.register(Order)
-admin.site.register(OrderItem)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(TourDay, TourDayAdmin)
 admin.site.register(TourDayOption)
 admin.site.register(TourProgram, TourProgramAdmin)
