@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/v1/tours/<int:id>/', views.DetailsTour.as_view()),
     path(r'pay', views.PayView.as_view(), name='pay_view'),
     path(r'pay-callback', views.PayCallbackView.as_view(), name='pay_callback'),
+    path('api/v1/tours/<int:tour_id>/order/payment', views.OrderPaymentView.as_view())
 ]
 
 if settings.DEBUG:

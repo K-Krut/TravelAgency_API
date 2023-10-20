@@ -107,8 +107,8 @@ class AdditionalOption(models.Model):
 class Order(models.Model):
     tour = models.ForeignKey(Tour, related_name='order', on_delete=models.DO_NOTHING)
     sum = models.IntegerField(verbose_name='Сума')
-    sum_paid = models.IntegerField(verbose_name='Сплачена сума')
-    code = models.CharField(verbose_name='Код')
+    sum_paid = models.IntegerField(verbose_name='Оплачена сума')
+    code = models.CharField(verbose_name='Номер замовлення')
     time_created = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
 
@@ -120,14 +120,15 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    place_number = models.IntegerField(verbose_name='Номер места')
-    name = models.CharField(verbose_name="Ім'я")
-    surname = models.CharField(verbose_name='Прізвище')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Замовлення')
+    place_number = models.IntegerField(verbose_name='Номер місця')
+    name = models.CharField(verbose_name='Імʼя')
+    surname = models.CharField(verbose_name='Фамілія')
     phone = models.CharField(verbose_name='Номер телефону')
     sum = models.IntegerField(verbose_name='Сума')
-    is_primary_contact = models.BooleanField()
+    is_primary_contact = models.BooleanField(verbose_name='Контакт для звʼязку')
     verification_code = models.IntegerField(verbose_name='Код верифікації')
+    time_create = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return f"{self.name} {self.surname}"

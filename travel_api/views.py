@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from TravelAgency_API import settings
 from liqpay.liqpay3 import LiqPay
@@ -101,12 +102,6 @@ class PayView(TemplateView):
         data = liqpay.cnb_data(params)
         html = liqpay.cnb_form(params)
 
-        print(signature)
-        print("\n\n\n")
-        print(data)
-        print('\n\n\n')
-        print(html)
-
         return render(request, self.template_name, {'signature': signature, 'data': data})
 
 
@@ -114,14 +109,38 @@ class PayView(TemplateView):
 class PayCallbackView(View):
     def post(self, request, *args, **kwargs):
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
-        data = request.POST.get('data')
+        data = request.GET.get('data')
         signature = request.POST.get('signature')
-        sign = liqpay.str_to_sign(settings.LIQPAY_PRIVATE_KEY + data + settings.LIQPAY_PRIVATE_KEY)
+        sign = liqpay.str_to_sign(f"{settings.LIQPAY_PRIVATE_KEY} + {data} + {settings.LIQPAY_PRIVATE_KEY}")
         if sign == signature:
             print('callback is valid')
         response = liqpay.decode_data_from_str(data)
         print('callback data', response)
-        return HttpResponse()
+
+        payment_status = liqpay.api("request", {
+            "action": "status",
+            "version": "3",
+            "order_id": response['order_id']
+        })
+        return Response(payment_status)
 
 
-
+class OrderPaymentView(APIView):
+    def post(self, request, tour_id):
+        request.data['tour_id'] = tour_id
+        queryset = Tour.objects.get(id=request.data['tour_id'])
+        final_cost = queryset.price * len(request.data['name'])
+        liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        params = {
+            'action': 'pay',
+            'amount': final_cost,
+            'currency': 'UAH',
+            'description': f'{queryset.name} - {len(request.data["name"])} passangers',
+            'order_id': random.randint(100000, 999999),
+            'version': '3',
+            'sandbox': 0,  # sandbox mode, set to 1 to enable it
+            'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
+        }
+        signature = liqpay.cnb_signature(params)
+        data = liqpay.cnb_data(params)
+        return Response({"data": data, "signature": signature})
