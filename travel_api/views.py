@@ -122,25 +122,72 @@ class PayCallbackView(View):
             "version": "3",
             "order_id": response['order_id']
         })
-        return Response(payment_status)
+
+        order = Order.objects.get(id=response['order_id'])
+        order.status = OrderStatus.objects.get(id=4)
+        order.paytype = response['paytype']
+        order.sender_card_mask2 = response.get('sender_card_mask2')
+        order.receiver_commission = response['receiver_commission']
+        order.save()
+        tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
+        tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
+
+        return Response
 
 
 class OrderPaymentView(APIView):
     def post(self, request, tour_id):
         request.data['tour_id'] = tour_id
         queryset = Tour.objects.get(id=request.data['tour_id'])
-        final_cost = queryset.price * len(request.data['name'])
+        final_cost = queryset.price * len(request.data['passengers'])
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        code = random.randint(100000, 999999)
+
+        order = Order.objects.create(
+            tour=queryset,
+            sum=final_cost,
+            sum_paid=0,
+            code=code,
+            status=OrderStatus.objects.get(id=10),
+            paytype='pay'
+        )
+
+        for i in request.data['passengers']:
+            place_number = queryset.free_places - 1
+            if request.data.get('is_active') and request.data.get('phone'):
+                OrderItem.objects.create(
+                    order=order,
+                    place_number=place_number,
+                    name=i['name'],
+                    surname=i['surname'],
+                    phone=i['phone'],
+                    sum=queryset.price,
+                    is_primary_contact=request.data['is_active'],
+                    verification_code=code
+                )
+            else:
+                OrderItem.objects.create(
+                    order=order,
+                    place_number=place_number,
+                    name=i['name'],
+                    surname=i['surname'],
+                    phone="None",
+                    sum=queryset.price,
+                    is_primary_contact=False,
+                    verification_code=code
+                )
+
         params = {
             'action': 'pay',
             'amount': final_cost,
             'currency': 'UAH',
-            'description': f'{queryset.name} - {len(request.data["name"])} passengers',
-            'order_id': random.randint(100000, 999999),
+            'description': f'{queryset.name} - {len(request.data["passengers"])} passengers',
+            'order_id': f'{order.id}',
             'version': '3',
-            'sandbox': 0,  # sandbox mode, set to 1 to enable it
+            'sandbox': 1,  # sandbox mode, set to 1 to enable it
             'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
         }
         signature = liqpay.cnb_signature(params)
         data = liqpay.cnb_data(params)
+
         return Response({"data": data, "signature": signature})

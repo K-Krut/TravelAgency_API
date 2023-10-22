@@ -123,10 +123,10 @@ class Order(models.Model):
     code = models.CharField(verbose_name='Номер замовлення')
     time_created = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=255, verbose_name="Статус оплати", null=True)
+    status = models.ForeignKey(to=OrderStatus, on_delete=models.DO_NOTHING)
     paytype = models.CharField(max_length=255, verbose_name="Метод оплати", null=True)
     sender_card_mask_2 = models.CharField(max_length=255, verbose_name="Номер карти платника", blank=True, null=True)
-    receiver_commission = models.CharField(max_length=255, verbose_name="Liqpay комісія", null=True)
+    receiver_commission = models.CharField(max_length=255, verbose_name="Liqpay комісія", null=True, blank=True)
 
     def __str__(self):
         return self.tour.name
