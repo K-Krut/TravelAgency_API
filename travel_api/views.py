@@ -135,7 +135,7 @@ class OrderPaymentView(APIView):
             'action': 'pay',
             'amount': final_cost,
             'currency': 'UAH',
-            'description': f'{queryset.name} - {len(request.data["name"])} passangers',
+            'description': f'{queryset.name} - {len(request.data["name"])} passengers',
             'order_id': random.randint(100000, 999999),
             'version': '3',
             'sandbox': 0,  # sandbox mode, set to 1 to enable it

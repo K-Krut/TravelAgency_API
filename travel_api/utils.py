@@ -10,13 +10,14 @@ def custom_exception_handler(exc, context):
 
     return response
 
-def create_liqpay_object():
+
+def create_liqpay_object(final_cost, queryset_name, passengers):
     liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
     params = {
         'action': 'pay',
         'amount': final_cost,
         'currency': 'UAH',
-        'description': f'{queryset.name} - {len(request.data["name"])} passangers',
+        'description': f'{queryset_name} - {passengers} passengers',
         'order_id': random.randint(100000, 999999),
         'version': '3',
         'sandbox': 0,  # sandbox mode, set to 1 to enable it
