@@ -7,3 +7,4 @@
 /images_faking/test.py
 /.idea/vcs.xml
 /.idea/dataSources.xml
+**/__pycache__
