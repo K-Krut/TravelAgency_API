@@ -1,6 +1,9 @@
 import datetime
 import random
+import smtplib
 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from TravelAgency_API import settings
 from liqpayapi.liqpay3 import LiqPay
 # from liqpay.liqpay3 import LiqPay
@@ -19,6 +22,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from .utils import send_mail, create_order
 from .models import *
 from .serializers import *
 
@@ -109,6 +113,7 @@ class PayView(TemplateView):
 @method_decorator(csrf_exempt, name='dispatch')
 class PayCallbackView(View):
     def post(self, request, *args, **kwargs):
+        response_for_user = None
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         data = request.GET.get('data')
         signature = request.POST.get('signature')
@@ -123,25 +128,77 @@ class PayCallbackView(View):
             "version": "3",
             "order_id": response['order_id']
         })
-        return Response(payment_status)
+
+        if payment_status['status'] == "error":
+            send_mail(
+                to_addr="adm.ivm.it@gmail.com",
+                subject=f"Ошибка при оплате - {response['order_id']}",
+                text=f"Ошибка при оплате заказа №{response['order_id']}\n\nОшибка: {payment_status}"
+            )
+            response_for_user = Response(payment_status)
+        else:
+            order = Order.objects.get(code=response['order_id'])
+            order.status = OrderStatus.objects.get(id=4)
+            order.paytype = response['paytype']
+            order.sender_card_mask2 = response.get('sender_card_mask2')
+            order.receiver_commission = response['receiver_commission']
+            order.save()
+            tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
+            tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
+
+            response_for_user = Response({
+                'tour': {
+                    'id': order.tour.id,
+                    'name': order.tour.name,
+                    'date_start': order.tour.date_start,
+                    'date_end': order.tour.date_end,
+                    'price': order.tour.price,
+                    'free_places': order.tour.free_places,
+                    'season': order.tour.season,
+                    'images': Image.objects.filter(tour=order.tour).values('aws_url')
+                },
+                'sumpaid': response['amount'],
+                'order_code': response['order_id']
+            })
+
+        return response_for_user
 
 
 class OrderPaymentView(APIView):
     def post(self, request, tour_id):
         request.data['tour_id'] = tour_id
         queryset = Tour.objects.get(id=request.data['tour_id'])
-        final_cost = queryset.price * len(request.data['name'])
+        final_cost = queryset.price * len(request.data['passengers'])
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+        code = random.randint(100000, 999999)
+
+        order = Order.objects.create(
+            tour=queryset,
+            sum=final_cost,
+            sum_paid=0,
+            code=code,
+            status=OrderStatus.objects.get(id=10),
+            paytype='pay'
+        )
+
+        for i in request.data['passengers']:
+            place_number = queryset.free_places - 1
+
+            print(request.data)
+
+            create_order(order, place_number, i['name'], i['surname'], i.get("phone"), queryset.price, i.get("is_active"), code)
+
         params = {
             'action': 'pay',
             'amount': final_cost,
             'currency': 'UAH',
-            'description': f'{queryset.name} - {len(request.data["name"])} passangers',
-            'order_id': random.randint(100000, 999999),
+            'description': f'{queryset.name} - {len(request.data["passengers"])} passengers',
+            'order_id': code,
             'version': '3',
-            'sandbox': 0,  # sandbox mode, set to 1 to enable it
-            'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
+            'sandbox': 1,
+            'server_url': 'http://127.0.0.1:8000/pay-callback/',
         }
         signature = liqpay.cnb_signature(params)
         data = liqpay.cnb_data(params)
+
         return Response({"data": data, "signature": signature})

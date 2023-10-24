@@ -104,6 +104,18 @@ class AdditionalOption(models.Model):
         verbose_name_plural = 'Додаткові витрати'
 
 
+class OrderStatus(models.Model):
+    status = models.CharField(max_length=255, verbose_name="Статус")
+    description = models.CharField(max_length=326, verbose_name="Опис")
+
+    def __str__(self):
+        return self.status
+
+    class Meta:
+        verbose_name = "Статусы"
+        verbose_name_plural = "Статусы заказов"
+
+
 class Order(models.Model):
     tour = models.ForeignKey(Tour, related_name='order', on_delete=models.DO_NOTHING)
     sum = models.IntegerField(verbose_name='Сума')
@@ -111,6 +123,10 @@ class Order(models.Model):
     code = models.CharField(verbose_name='Номер замовлення')
     time_created = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
+    status = models.ForeignKey(to=OrderStatus, on_delete=models.DO_NOTHING)
+    paytype = models.CharField(max_length=255, verbose_name="Метод оплати", null=True)
+    sender_card_mask_2 = models.CharField(max_length=255, verbose_name="Номер карти платника", blank=True, null=True)
+    receiver_commission = models.CharField(max_length=255, verbose_name="Liqpay комісія", null=True, blank=True)
 
     def __str__(self):
         return self.tour.name
@@ -124,9 +140,9 @@ class OrderItem(models.Model):
     place_number = models.IntegerField(verbose_name='Номер місця')
     name = models.CharField(verbose_name='Імʼя')
     surname = models.CharField(verbose_name='Фамілія')
-    phone = models.CharField(verbose_name='Номер телефону')
+    phone = models.CharField(verbose_name='Номер телефону', blank=True)
     sum = models.IntegerField(verbose_name='Сума')
-    is_primary_contact = models.BooleanField(verbose_name='Контакт для звʼязку')
+    is_primary_contact = models.BooleanField(verbose_name='Контакт для звʼязку', blank=True)
     verification_code = models.IntegerField(verbose_name='Код верифікації')
     time_create = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -186,5 +202,3 @@ class TourProgram(models.Model):
     class Meta:
         verbose_name = 'Програма турів'
         verbose_name_plural = 'Програми турів'
-
-
