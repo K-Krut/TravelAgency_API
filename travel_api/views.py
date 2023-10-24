@@ -22,7 +22,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from .utils import send_mail, create_order
+from .utils import send_mail, create_order, create_message
 from .models import *
 from .serializers import *
 
@@ -161,6 +161,8 @@ class PayCallbackView(View):
                     'sumpaid': response['amount'],
                     'order_code': response['order_id']
                 })
+
+                send_mail("adm.ivm.it@gmail.com", "Admin, було сформовано нове замовлення", create_message(order, response['amount']))
             except Exception as e:
                 send_mail("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа", f"Данные оплаты: {response}\n\nОшибка: {e}")
                 response_for_user = Response({"Error": "Ошибка при создании заказа"})

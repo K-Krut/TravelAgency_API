@@ -74,3 +74,22 @@ def send_mail(to_addr, subject, text):
     server.auth_plain()
     server.send_message(msg)
     server.quit()
+
+
+def create_message(order, sumpaid):
+    message = "Admin, було сформовано нове замовлення\nДеталі замовлення"
+
+    message = message + f"\nНомер замовлення: {order.code}"
+    message = message + f"\nСплачена сума: {sumpaid} грн"
+    message = message + f"Назва туру: {order.tour.name}\n\nДата початку: {order.tour.date_start}\n\nДата Кінця: {order.tour.date_end}"
+    message = message + "\n\nПасажири"
+
+    items = OrderItem.objects.filter(order=order)
+
+    print(items)
+
+    for item in items:
+        message = message + f"\n\nІмʼя: {item.name} {item.surnamename}\nНомер: {item.phone}\nМісце: {item.place_number}"
+
+    print(message)
+    return message
