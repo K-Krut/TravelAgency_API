@@ -2,7 +2,6 @@ import random
 from django.core.management.base import BaseCommand
 from faker import Faker
 from travel_api.models import *
-from .data.additional_options_images import images
 from random import choice
 
 fake = Faker()
@@ -17,20 +16,16 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         num_entries = kwargs['num_entries']
 
-        all_tours = list(Tour.objects.all())
-        all_tour_days = list(TourDay.objects.all())
-        all_tour_day_options = list(TourDayOption.objects.all())
-
         for _ in range(num_entries):
-            selected_tours = random.sample(all_tours, k=random.randint(1, len(all_tours)))
-            selected_tour_days = random.sample(all_tour_days, k=random.randint(1, len(all_tour_days)))
-            selected_tour_day_options = random.sample(all_tour_day_options,
-                                                      k=random.randint(1, len(all_tour_day_options)))
-
+            tour = choice(Tour.objects.filter(pk=4))
+            day = choice(TourDay.objects.all())
+            program_item = TourProgram.objects.filter(tour=tour, tour_days=day).order_by('-order').first()
+            order = program_item.order + 1 if program_item and program_item.order else 1
             tour_program = TourProgram.objects.create(
-                tour=choice(Tour.objects.all()),
-                tour_days=choice(TourDay.objects.all()),
-                tour_option=choice(TourDayOption.objects.all())
+                tour=tour,
+                tour_days=day,
+                tour_option=choice(TourDayOption.objects.all()),
+                order=order
             )
 
         self.stdout.write(self.style.SUCCESS(f'Successfully generated {num_entries} fake data entries'))

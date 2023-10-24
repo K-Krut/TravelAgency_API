@@ -168,16 +168,19 @@ class TourProgram(models.Model):
     tour = models.ForeignKey(to=Tour, on_delete=models.DO_NOTHING, related_name='program')
     tour_days = models.ForeignKey(to=TourDay, on_delete=models.DO_NOTHING)
     tour_option = models.ForeignKey(to=TourDayOption, on_delete=models.DO_NOTHING)
+    order = models.IntegerField(validators=[MinValueValidator(0)], default=1)
 
     def __str__(self):
         return self.tour.name
 
     def name(self):
         return self.tour.name
+
     name.short_description = 'Назва'
 
     def custom_info(self):
         return f"{self.tour.name} - {self.tour_days.day} - {self.tour_option.name}"
+
     custom_info.short_description = 'Інформація'
 
     class Meta:

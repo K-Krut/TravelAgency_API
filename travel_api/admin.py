@@ -10,8 +10,9 @@ class TourAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
 
 
+
 class TourProgramAdmin(admin.ModelAdmin):
-    list_display = ('custom_info', 'name', 'id')
+    list_display = ('custom_info', 'name', 'tour_days', 'order', 'id')
     search_fields = ['name']
     list_filter = ['tour_days', 'tour_option', 'tour']
 
