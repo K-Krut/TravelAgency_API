@@ -51,7 +51,7 @@ class ToursList(generics.ListCreateAPIView):
             try:
                 queryset = queryset.order_by(ordering)
             except FieldError:
-                return _Response({'error': 'Sorting by incorrect field'})
+                return Response({'error': 'Sorting by incorrect field'})
 
         return queryset
 
