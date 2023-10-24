@@ -77,12 +77,17 @@ class DetailsSerializer(serializers.ModelSerializer):
         return obj.option.filter().values('name', 'icon')
 
     def get_program(self, obj):
-        return obj.program.filter().values(
-            'tour_days__day',
-            'tour_option__name'
-        )
+        tour_programs = obj.program.all().order_by('tour_days', 'order')
+
+        grouped_by_days = {}
+        for program in tour_programs:
+            day = program.tour_days.day
+            if day not in grouped_by_days:
+                grouped_by_days[day] = []
+            grouped_by_days[day].append(program.tour_option.name)
+
+        return [{"name": day, "options": options} for day, options in grouped_by_days.items()]
 
     def get_duration(self, obj):
         duration = obj.date_end - obj.date_start
-
         return duration.days
