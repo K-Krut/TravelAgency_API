@@ -137,29 +137,33 @@ class PayCallbackView(View):
             )
             response_for_user = Response(payment_status)
         else:
-            order = Order.objects.get(code=response['order_id'])
-            order.status = OrderStatus.objects.get(id=4)
-            order.paytype = response['paytype']
-            order.sender_card_mask2 = response.get('sender_card_mask2')
-            order.receiver_commission = response['receiver_commission']
-            order.save()
-            tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
-            tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
+            try:
+                order = Order.objects.get(code=response['order_id'])
+                order.status = OrderStatus.objects.get(id=4)
+                order.paytype = response['paytype']
+                order.sender_card_mask2 = response.get('sender_card_mask2')
+                order.receiver_commission = response['receiver_commission']
+                order.save()
+                tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
+                tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
 
-            response_for_user = Response({
-                'tour': {
-                    'id': order.tour.id,
-                    'name': order.tour.name,
-                    'date_start': order.tour.date_start,
-                    'date_end': order.tour.date_end,
-                    'price': order.tour.price,
-                    'free_places': order.tour.free_places,
-                    'season': order.tour.season,
-                    'images': Image.objects.filter(tour=order.tour).values('aws_url')
-                },
-                'sumpaid': response['amount'],
-                'order_code': response['order_id']
-            })
+                response_for_user = Response({
+                    'tour': {
+                        'id': order.tour.id,
+                        'name': order.tour.name,
+                        'date_start': order.tour.date_start,
+                        'date_end': order.tour.date_end,
+                        'price': order.tour.price,
+                        'free_places': order.tour.free_places,
+                        'season': order.tour.season,
+                        'images': Image.objects.filter(tour=order.tour).values('aws_url')
+                    },
+                    'sumpaid': response['amount'],
+                    'order_code': response['order_id']
+                })
+            except Exception as e:
+                send_mail("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа", f"Данные оплаты: {response}\n\nОшибка: {e}")
+                response_for_user = Response({"Error": "Ошибка при создании заказа"})
 
         return response_for_user
 
