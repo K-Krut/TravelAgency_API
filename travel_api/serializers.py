@@ -56,7 +56,7 @@ class OptionSerializer(serializers.ModelSerializer):
 
 class DetailsSerializer(serializers.ModelSerializer):
     season = serializers.StringRelatedField(many=False)
-    images = serializers.StringRelatedField(many=True)
+    images = serializers.SerializerMethodField()
     landmarks = serializers.SerializerMethodField()
     program = serializers.SerializerMethodField()
     options = serializers.SerializerMethodField()
@@ -65,7 +65,11 @@ class DetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'duration', 'images', 'landmarks', 'program', 'options', 'additional_options')
+        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'duration', 'images',
+                  'landmarks', 'program', 'options', 'additional_options')
+
+    def get_images(self, obj):
+        return [image.aws_url for image in obj.images.all()]
 
     def get_landmarks(self, obj):
         return obj.option.filter(is_landmark=True).values('name', 'image_url')
