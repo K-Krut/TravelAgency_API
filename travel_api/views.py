@@ -67,7 +67,6 @@ class TourSearch(generics.ListAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name', 'free_places', 'price', 'date_start']
-    ordering = ['name']
 
     def get_queryset(self):
         queryset = super(TourSearch, self).get_queryset()
