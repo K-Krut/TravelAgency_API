@@ -69,19 +69,6 @@ class TourSearch(generics.ListAPIView):
     ordering_fields = ['name', 'free_places', 'price', 'date_start']
     ordering = ['name']
 
-    # def get_queryset(self):
-    #     queryset = super(TourSearch, self).get_queryset()
-    #
-    #     seasons = self.request.query_params.getlist('season', [])
-    #     if seasons:
-    #         queryset = queryset.filter(season__name__in=seasons)
-    #
-    #     durations = self.request.query_params.getlist('duration', [])
-    #     if durations:
-    #         queryset = Tour.objects.filter(
-    #             date_end__in=[F('date_start') + datetime.timedelta(days=int(dur)) for dur in durations])
-    #
-    #     return queryset
     def get_queryset(self):
         queryset = super(TourSearch, self).get_queryset()
 
