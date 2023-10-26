@@ -140,9 +140,9 @@ class OrderItem(models.Model):
     place_number = models.IntegerField(verbose_name='Номер місця')
     name = models.CharField(verbose_name='Імʼя')
     surname = models.CharField(verbose_name='Фамілія')
-    phone = models.CharField(verbose_name='Номер телефону', blank=True)
+    phone = models.CharField(verbose_name='Номер телефону', null=True)
     sum = models.IntegerField(verbose_name='Сума')
-    is_primary_contact = models.BooleanField(verbose_name='Контакт для звʼязку', blank=True)
+    is_primary_contact = models.BooleanField(verbose_name='Контакт для звʼязку', default=False)
     verification_code = models.IntegerField(verbose_name='Код верифікації')
     time_create = models.DateTimeField(auto_now_add=True, null=True)
 

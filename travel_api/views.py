@@ -144,7 +144,8 @@ class PayCallbackView(View):
                 order.sender_card_mask2 = response.get('sender_card_mask2')
                 order.receiver_commission = response['receiver_commission']
                 order.save()
-                tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'images')
+                tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price',
+                                                                 'free_places', 'season', 'images')
                 tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
 
                 response_for_user = Response({
@@ -173,13 +174,13 @@ class PayCallbackView(View):
 class OrderPaymentView(APIView):
     def post(self, request, tour_id):
         request.data['tour_id'] = tour_id
-        queryset = Tour.objects.get(id=request.data['tour_id'])
-        final_cost = queryset.price * len(request.data['passengers'])
+        tour = Tour.objects.get(id=request.data['tour_id'])
+        final_cost = tour.price * len(request.data['passengers'])
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         code = random.randint(100000, 999999)
 
         order = Order.objects.create(
-            tour=queryset,
+            tour=tour,
             sum=final_cost,
             sum_paid=0,
             code=code,
@@ -187,18 +188,27 @@ class OrderPaymentView(APIView):
             paytype='pay'
         )
 
-        for i in request.data['passengers']:
-            place_number = queryset.free_places - 1
-
+        for passenger in request.data['passengers']:
+            print(passenger)
+            place_number = tour.free_places - 1
             print(request.data)
 
-            create_order(order, place_number, i['name'], i['surname'], i.get("phone"), queryset.price, i.get("is_active"), code)
+            create_order(
+                order,
+                place_number,
+                passenger['name'],
+                passenger['surname'],
+                passenger.get("phone", ""),
+                tour.price,
+                passenger.get('is_primary_contact', False),
+                code
+            )
 
         params = {
             'action': 'pay',
             'amount': final_cost,
             'currency': 'UAH',
-            'description': f'{queryset.name} - {len(request.data["passengers"])} passengers',
+            'description': f'{tour.name} - {len(request.data["passengers"])} passengers',
             'order_id': code,
             'version': '3',
             'sandbox': 1,
