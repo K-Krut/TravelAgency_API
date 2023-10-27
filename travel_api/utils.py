@@ -145,12 +145,12 @@ def get_passengers_info(order):
     ]
 
 
-def get_tour_info_for_order(order, response):
+def get_order_response(order, response):
     tour = Tour.objects.get(pk=order.tour.pk)
     tour_serializer = TourSerializer(tour)
+
     # обновление количества свободных мест после заказа
     passengers = get_passengers_info(order)
-    print(passengers)
     update_tour_free_places(tour, len(passengers))
     tour_data = tour_serializer.data
 

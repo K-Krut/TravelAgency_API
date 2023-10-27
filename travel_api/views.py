@@ -92,7 +92,6 @@ class PayView(TemplateView):
 @method_decorator(csrf_exempt, name='dispatch')
 class PayCallbackView(View):
     def post(self, request, *args, **kwargs):
-        response_for_user = None
         response = get_liqpay_decoded_response(request)
         print('callback data', response)
 
@@ -100,21 +99,16 @@ class PayCallbackView(View):
         if payment_status.get('status') == "error":
             send_payment_error_email(response, payment_status)
             return JsonResponse(payment_status)
-        else:
-            order = update_order(payment_status)
 
-            print('TOUR ID ', order.tour.pk)
-
-            response_for_user = get_tour_info_for_order(order, response)
-            print(response_for_user)
-            # send_mail_("Admin, було сформовано нове замовлення",
-            #            create_message(order, response.get('amount')))
-
-            # except Exception as e:
-            #     send_mail_("Error - ошибка при создании заказа",
-            #                f"Данные оплаты: {response}\n\nОшибка: {e}")
-            #     response_for_user = JsonResponse({"Error": "Ошибка при создании заказа"})
-        return JsonResponse(response_for_user)
+        order = update_order(payment_status)
+        order_response = get_order_response(order, response)
+        send_mail_("Admin, було сформовано нове замовлення",
+                   create_message(order, order_response))
+        # except Exception as e:
+        #     send_mail_("Error - ошибка при создании заказа",
+        #                f"Данные оплаты: {response}\n\nОшибка: {e}")
+        #     response_for_user = JsonResponse({"Error": "Ошибка при создании заказа"})
+        return JsonResponse(order_response)
 
 
 class OrderPaymentView(APIView):
