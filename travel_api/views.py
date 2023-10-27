@@ -1,6 +1,7 @@
 import random
 from django.http import JsonResponse
 from TravelAgency_API import settings
+from TravelAgency_API.settings import BASE_URL
 from liqpayapi.liqpay3 import LiqPay
 from django.db.models import Count, F
 from django.core.exceptions import FieldError
@@ -102,7 +103,7 @@ class PayCallbackView(View):
 
         order = update_order(payment_status)
         order_response = get_order_response(order, response)
-        send_mail_("Admin, було сформовано нове замовлення", create_message(order_response))
+        send_mail_("Admin, було сформовано нове замовлення", generate_successful_email(order_response))
         return JsonResponse(order_response)
 
 
@@ -123,31 +124,30 @@ class OrderPaymentView(APIView):
             paytype='pay'
         )
 
-        for passenger in request.data['passengers']:
-            print(passenger)
-            place_number = tour.free_places - 1
-            print(request.data)
-
-            create_order(
-                order,
-                place_number,
-                passenger['name'],
-                passenger['surname'],
-                passenger.get("phone", ""),
-                tour.price,
-                passenger.get('is_primary_contact', False),
-                code
-            )
+        create_order_items(request, order, tour)
+        # for passenger in request.data['passengers']:
+        #     place_number = tour.free_places - 1
+        #
+        #     create_order(
+        #         order,
+        #         place_number,
+        #         passenger['name'],
+        #         passenger['surname'],
+        #         passenger.get("phone", ""),
+        #         tour.price,
+        #         passenger.get('is_primary_contact', False),
+        #         code
+        #     )
 
         params = {
             'action': 'pay',
             'amount': final_cost,
             'currency': 'UAH',
-            'description': f'{tour.name} - {len(request.data["passengers"])} passengers',
+            'description': f'Тур {tour.name} для {len(request.data["passengers"])} пасажирів',
             'order_id': code,
             'version': '3',
             'sandbox': 1,
-            'server_url': 'http://127.0.0.1:8000/pay-callback/',
+            'server_url': f'{BASE_URL}/pay-callback/',
         }
         signature = liqpay.cnb_signature(params)
         data = liqpay.cnb_data(params)

@@ -40,32 +40,6 @@ def create_liqpay_object(final_cost, queryset_name, passengers):
     }
 
 
-def create_order(order, place_number, name, surname, phone, price, is_primary_contact, code):
-    print(phone, is_primary_contact)
-
-    if is_primary_contact is None and phone is None:
-        OrderItem.objects.create(
-            order=order,
-            place_number=place_number,
-            name=name,
-            surname=surname,
-            phone="None",
-            sum=price,
-            is_primary_contact=False,
-            verification_code=code
-        )
-    else:
-        OrderItem.objects.create(
-            order=order,
-            place_number=place_number,
-            name=name,
-            surname=surname,
-            phone=phone,
-            sum=price,
-            is_primary_contact=is_primary_contact,
-            verification_code=code
-        )
-
 
 def update_order(response):
     order = Order.objects.get(code=response.get('order_id'))
@@ -97,6 +71,21 @@ def get_liqpay_payment_status(response):
     })
 
 
+def create_order_items(request, order, tour):
+    current_free_places = tour.free_places
+    for num, passenger in enumerate(request.data['passengers']):
+        place_number = current_free_places - num - 1
+        OrderItem.objects.create(
+            order=order,
+            place_number=place_number,
+            name=passenger['name'],
+            surname=passenger['surname'],
+            phone=passenger.get("phone", ""),
+            sum=tour.price,
+            is_primary_contact=passenger.get('is_primary_contact', False),
+            verification_code=order.code
+        )
+
 def send_mail_(subject, text, recipient="adm.ivm.it@gmail.com"):
     email_from = settings.EMAIL_HOST_USER
     send_mail(subject, text, email_from, [recipient])
@@ -112,7 +101,7 @@ def get_phone_info(passenger):
     return f"Номер: {passenger['phone']}'\n" if passenger['phone'] else ''
 
 
-def create_message(data):
+def generate_successful_email(data):
     passengers_info = "\n\n".join([f"Клієнт №{ind + 1}\n"
                                    f"Імʼя: {passenger['name']} {passenger['surname']}\n"
                                    f"{get_phone_info(passenger)}"
