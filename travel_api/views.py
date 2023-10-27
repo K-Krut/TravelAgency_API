@@ -90,18 +90,26 @@ class PayView(TemplateView):
 @method_decorator(csrf_exempt, name='dispatch')
 class PayCallbackView(View):
     def post(self, request, *args, **kwargs):
+        # try:
         response = get_liqpay_decoded_response(request)
-        print('callback data', response)
-
+        print(response)
         payment_status = get_liqpay_payment_status(response)
         if payment_status.get('status') == "error":
-            send_payment_error_email(response, payment_status)
-            return JsonResponse(payment_status)
-
-        order = update_order(payment_status)
-        order_response = get_order_response(order, response)
-        send_mail_("Admin, було сформовано нове замовлення", generate_successful_email(order_response))
+            send_mail_(f"Помилка із замовленням №{response.get('order_id')}",
+                       generate_order_bad_request_email(response, payment_status))
+            print(payment_status)
+            return JsonResponse({'error': payment_status}, status=402)
+        try:
+            order = update_order(payment_status)
+            order_response = get_order_response(order, response)
+        except Exception as e:
+            send_mail_(f"#ERROR із замовленням №{response.get('order_id')}",
+                       generate_order_server_error_email(response, payment_status))
+            return JsonResponse({'error': str(e)}, status=500)
+        send_mail_("Admin, було успішно сформовано нове замовлення", generate_order_successful_email(order_response))
         return JsonResponse(order_response)
+        # except Exception as e:
+        #     return JsonResponse({'error': str(e)}, status=400)
 
 
 class OrderPaymentView(APIView):

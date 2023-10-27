@@ -19,23 +19,9 @@ def custom_exception_handler(exc, context):
     return response
 
 
-def create_liqpay_object(final_cost, queryset_name, passengers):
-    liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
-    params = {
-        'action': 'pay',
-        'amount': final_cost,
-        'currency': 'UAH',
-        'description': f'{queryset_name} - {passengers} passengers',
-        'order_id': random.randint(100000, 999999),
-        'version': '3',
-        'sandbox': 0,  # sandbox mode, set to 1 to enable it
-        'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
-    }
-
-
 def update_order(response):
     order = Order.objects.get(code=response.get('order_id'))
-    order.status = OrderStatus.objects.get(id=4)
+    order.status = OrderStatus.objects.get(id=444)  # correct id 4
     order.sum_paid = int(response.get('amount')) if response.get('amount') else 0
     order.paytype = response.get('paytype')
     order.sender_card_mask_2 = response.get('sender_card_mask2')
@@ -142,7 +128,7 @@ def get_phone_info(passenger):
     return f"Номер: {passenger['phone']}'\n" if passenger['phone'] else ''
 
 
-def generate_successful_email(data):
+def generate_order_successful_email(data):
     passengers_info = "\n\n".join([f"Клієнт №{ind + 1}\n"
                                    f"Імʼя: {passenger['name']} {passenger['surname']}\n"
                                    f"{get_phone_info(passenger)}"
@@ -153,6 +139,30 @@ def generate_successful_email(data):
            f"Назва туру: {data['tour']['name']}\n" \
            f"Дати: {data['tour']['date_start']} - {data['tour']['date_end']}\n\n" \
            f"Пасажири:\n{passengers_info}"
+
+
+def generate_order_bad_request_email(response, payment_status):
+    return f"Хтось намагався зробити запит до API на перевірку статусу оплати " \
+           f"та оновлення даних про замовлення в Базі Даних.\n" \
+           f"Замовлення №{response.get('order_id')}\n\n" \
+           f"Відповідь Liqpay:\n" \
+           f"Статус платежу: {payment_status}"
+
+
+def process_liqpay_payment_info(payment_status):
+    return f"ID платежу: {payment_status.get('payment_id')}\n" \
+           f"Статус платежу: {payment_status.get('status')}\n" \
+           f"Метод оплати: {payment_status.get('paytype')}\n" \
+           f"Номер карти: {payment_status.get('sender_card_mask2')}\n" \
+           f"Сума платежу: {payment_status.get('amount')}\n" \
+           f"Liqpay комісія: {payment_status.get('receiver_commission')}"
+
+
+def generate_order_server_error_email(response, payment_status):
+    return f"Помилка при оновленні інформації про замовлення в Базі Даних\n" \
+           f"Замовлення №{response.get('order_id')}\n\n" \
+           f"Відповідь Liqpay:\n" \
+           f"{process_liqpay_payment_info(payment_status)}"
 
 
 def update_tour_free_places(tour, places):
