@@ -24,7 +24,6 @@ SECRET_KEY = "django-insecure-2jz4h_#35psowa*h(ofq%@%9q98syy8v!rw$_+s3=es-i^%z1s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
 ALLOWED_HOSTS = [
     'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
     '127.0.0.1'
@@ -145,13 +144,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

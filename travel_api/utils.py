@@ -1,19 +1,11 @@
 import random
-import ssl
-
-from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from rest_framework.views import exception_handler
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
 from TravelAgency_API import settings
-from TravelAgency_API.settings import EMAIL_ADMIN_RECIPIENT
+from TravelAgency_API.settings import EMAIL_ADMIN_RECIPIENT, BASE_URL
 from liqpayapi.liqpay3 import LiqPay
 from .models import *
 from django.core.mail import send_mail
-import smtplib
-
 from .serializers import TourSerializer
 
 
@@ -71,6 +63,23 @@ def get_liqpay_payment_status(response):
     })
 
 
+def get_liqpay_pay_data(request, order, tour):
+    liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+    params = {
+        'action': 'pay',
+        'amount': request.data['cost'],
+        'currency': 'UAH',
+        'description': f'Тур {tour.name} для {len(request.data["passengers"])} пасажирів',
+        'order_id': order.code,
+        'version': '3',
+        'sandbox': 1,
+        'server_url': f'{BASE_URL}/pay-callback/',
+    }
+    signature = liqpay.cnb_signature(params)
+    data = liqpay.cnb_data(params)
+    return signature, data
+
+
 def generate_unique_code():
     while True:
         code = random.randint(100000, 999999)
@@ -85,10 +94,9 @@ def create_new_order(tour, request):
         sum=request.data['cost'],
         sum_paid=0,
         code=code,
-        status=OrderStatus.objects.get(id=10),
+        status=OrderStatus.objects.get(id=10),  # 10 correct id
         paytype='pay'
     )
-
 
 def create_order_items(request, order, tour):
     current_free_places = tour.free_places
