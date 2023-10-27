@@ -64,9 +64,39 @@ def create_order(order, place_number, name, surname, phone, price, is_primary_co
         )
 
 
-def send_mail_(to_addr, subject, text):
+def update_order(response):
+    order = Order.objects.get(code=response.get('order_id'))
+    order.status = OrderStatus.objects.get(id=4)
+    order.sum_paid = int(response.get('amount')) if response.get('amount') else 0
+    order.paytype = response.get('paytype')
+    order.sender_card_mask_2 = response.get('sender_card_mask2')
+    order.receiver_commission = response.get('receiver_commission')
+    order.save()
+    return order
+
+
+def get_liqpay_decoded_response(request):
+    liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+    data = request.GET.get('data')
+    signature = request.GET.get('signature')
+    sign = liqpay.str_to_sign(f"{settings.LIQPAY_PRIVATE_KEY} + {data} + {settings.LIQPAY_PRIVATE_KEY}")
+    if sign == signature:
+        print('callback is valid')
+    return liqpay.decode_data_from_str(data)
+
+
+def get_liqpay_payment_status(response):
+    liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
+    return liqpay.api("request", {
+        "action": "status",
+        "version": "3",
+        "order_id": response.get('order_id')
+    })
+
+
+def send_mail_(subject, text, recipient="adm.ivm.it@gmail.com"):
     email_from = settings.EMAIL_HOST_USER
-    send_mail(subject, text, email_from, [to_addr])
+    send_mail(subject, text, email_from, [recipient])
 
 
 def create_message(order, sumpaid):
@@ -88,14 +118,30 @@ def create_message(order, sumpaid):
     return message
 
 
-def update_order(response):
-    order = Order.objects.get(code=response.get('order_id'))
-    order.status = OrderStatus.objects.get(id=4)
-    order.sum_paid = int(response.get('amount')) if response.get('amount') else 0
-    order.paytype = response.get('paytype')
-    order.sender_card_mask_2 = response.get('sender_card_mask2')
-    order.receiver_commission = response.get('receiver_commission')
-    order.save()
-    return order
+def send_payment_error_email(response, payment_status):
+    send_mail_(
+        subject=f"Помилка оплати - {response.get('order_id')}",
+        text=f"Помилка оплати замовлення №{response.get('order_id')}\n\nПомилка: {payment_status}"
+    )
 
+def get_tour_info_for_order(order, response):
+    tour = Tour.objects.get(pk=order.tour.pk)
+    free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
+    print(order.tour)
+    print(tour)
+    print(tour.id)
 
+    return {
+        'tour': {
+            'id': tour.id,
+            'name': tour.name,
+            'date_start': tour.date_start,
+            'date_end': tour.date_end,
+            'price': tour.price,
+            'free_places': free_places,
+            'season': tour.season,
+            'images': [img.aws_url for img in Image.objects.filter(tour_image=tour)]
+        },
+        'sumpaid': response.get('amount'),
+        'order_code': response.get('order_id')
+    }

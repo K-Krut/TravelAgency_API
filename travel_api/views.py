@@ -14,7 +14,7 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .utils import create_order, create_message, send_mail_, update_order
+from .utils import *
 from .serializers import *
 
 
@@ -93,52 +93,24 @@ class PayView(TemplateView):
 class PayCallbackView(View):
     def post(self, request, *args, **kwargs):
         response_for_user = None
-        liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
-        data = request.GET.get('data')
-        signature = request.GET.get('signature')
-        sign = liqpay.str_to_sign(f"{settings.LIQPAY_PRIVATE_KEY} + {data} + {settings.LIQPAY_PRIVATE_KEY}")
-        if sign == signature:
-            print('callback is valid')
-        response = liqpay.decode_data_from_str(data)
+        response = get_liqpay_decoded_response(request)
         print('callback data', response)
 
-        payment_status = liqpay.api("request", {
-            "action": "status",
-            "version": "3",
-            "order_id": response['order_id']
-        })
-
-        if payment_status['status'] == "error":
-            send_mail_(
-                to_addr="adm.ivm.it@gmail.com",
-                subject=f"Ошибка при оплате - {response['order_id']}",
-                text=f"Ошибка при оплате заказа №{response['order_id']}\n\nОшибка: {payment_status}"
-            )
-            response_for_user = JsonResponse(payment_status)
+        payment_status = get_liqpay_payment_status(response)
+        if payment_status.get('status') == "error":
+            send_payment_error_email(response, payment_status)
+            return JsonResponse(payment_status)
         else:
             order = update_order(payment_status)
-            tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price',
-                                                             'free_places', 'season', 'images')
-            tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
-            response_for_user = JsonResponse({
-                'tour': {
-                    'id': order.tour.id,
-                    'name': order.tour.name,
-                    'date_start': order.tour.date_start,
-                    'date_end': order.tour.date_end,
-                    'price': order.tour.price,
-                    'free_places': order.tour.free_places,
-                    'season': order.tour.season,
-                    'images': Image.objects.filter(tour=order.tour).values('aws_url')
-                },
-                'sumpaid': response['amount'],
-                'order_code': response['order_id']
-            })
+
+            print('TOUR ID ', order.tour.pk)
+
+            response_for_user = get_tour_info_for_order(order, response)
             print(response_for_user)
-            send_mail_("adm.ivm.it@gmail.com", "Admin, було сформовано нове замовлення",
-                       create_message(order, response['amount']))
+            send_mail_("Admin, було сформовано нове замовлення",
+                       create_message(order, response.get('amount')))
             # except Exception as e:
-            #     send_mail_("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа",
+            #     send_mail_("Error - ошибка при создании заказа",
             #                f"Данные оплаты: {response}\n\nОшибка: {e}")
             #     response_for_user = JsonResponse({"Error": "Ошибка при создании заказа"})
         return response_for_user if response_for_user else JsonResponse({"Error": "Ошибка при создании заказа"})
