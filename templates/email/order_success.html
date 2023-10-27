@@ -16,46 +16,36 @@
     </style>
 </head>
 <body>
-    <div style="position: relative; width: 1440px; height: 941px; background: #FBF8F8; display: flex; flex-direction: column; align-items: center; padding: 100px 0px; gap: 80px;">
-        <div style="width: 763px; height: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px;">
-            <h1 style="font-size: 60px; color: #1E7400; text-align: center; font-family: 'NAMU', sans-serif;">Оплата пройшла успішно!</h1>
-            <div style="display: flex; justify-content: space-between; width: 763px;">
-                <div style="display: flex; gap: 10px;">
-                    <span style="font-size: 20px; color: #07020D;">Номер замовлення:</span>
-                    <span style="font-size: 20px; font-weight: 500; color: #07020D;">678593</span>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <span style="font-size: 20px; color: #07020D;">Сплачено:</span>
-                    <span style="font-size: 20px; font-weight: 500; color: #07020D;">3000 ₴</span>
-                </div>
+<div>
+    <div>
+        <h1 style="font-size: 60px; color: #1E7400; text-align: center;">Оплата пройшла успішно!</h1>
+        <h2>Номер замовлення: {{ data.order_code }}</h2>
+        <h2>Сплачено: {{ data.sumpaid }} ₴</h2>
+    </div>
+    <div >
+        <img src=f"{{ data.tour.images }}" alt="Tour Image" style="width: 311px; height: 200px; border-radius: 8px;">
+        <div>
+            <div>
+                <h3 style="font-size: 24px; color: #07020D;">{{ data.tour.name }}</h3>
+                <p style="font-size: 20px; color: #07020D;">{{data.tour.date_start}} — {{data.tour.date_end}}</p>
             </div>
-        </div>
-        <div style="width: 763px; height: 280px; display: flex; border: 2px solid #D3DAE0; border-radius: 10px; padding: 40px; gap: 50px;">
-            <img src="https://images.unsplash.com/photo-1484911579927-b3f008130467?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Y2FycGF0aGlhbiUyMG1vdW50YWlufGVufDB8MHwwfHx8Mg%3D%3D&w=1000&q=80" alt="Tour Image" style="width: 311px; height: 200px; border-radius: 8px;">
-            <div style="display: flex; flex-direction: column; gap: 30px;">
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <h2 style="font-size: 24px; color: #07020D;">Назва туру</h2>
-                    <span style="font-size: 20px; color: #07020D;">7.10 — 10.10</span>
-                </div>
-                <div style="width: 311px; display: flex; justify-content: space-between; border-top: 1px solid #D3DAE0; padding-top: 10px;">
-                    <span style="font-size: 20px; color: #07020D;">залишилось місць</span>
-                    <span style="font-size: 20px; font-weight: 500; color: #07020D; padding: 5px 15px; border: 1px solid #1E7400; border-radius: 5px;">14</span>
-                </div>
-            </div>
-        </div>
-        <div style="width: 763px; display: flex; justify-content: space-between; gap: 40px;">
-            <div style="width: 363px; height: 130px; border: 2px solid #D3DAE0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-                <span style="font-size: 24px; color: #07020D;">Клієнт №1</span>
-                <span style="font-size: 20px; color: #07020D;">Ім'я: Ім'я Прізвище</span>
-                <span style="font-size: 20px; color: #07020D;">Номер: +380973495051</span>
-                <span style="font-size: 20px; color: #07020D;">місце: 14</span>
-            </div>
-            <div style="width: 363px; height: 130px; border: 2px solid #D3DAE0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-                <span style="font-size: 24px; color: #07020D;">Клієнт №2</span>
-                <span style="font-size: 20px; color: #07020D;">Ім'я: Ім'я Прізвище</span>
-                <span style="font-size: 20px; color: #07020D;">місце: 15</span>
+            <div>
+                <p style="font-size: 20px; color: #07020D;">залишилось місць {{ 14 }}</p>
             </div>
         </div>
     </div>
+    <div>
+        {%  for pessanger in data.passengers %}
+            <div>
+                <p style="font-size: 20px; color: #07020D;">Клієнт №{{ forloop.counter }}</p>
+                <p style="font-size: 15px; color: #07020D; font-weight: 500;">Ім'я: {{ passenger.name}} {{ passenger.surname }}</p>
+                {% if pessanger.phone %}
+                    <p style="font-size: 15px; color: #07020D; font-weight: 500;">Номер: {{ pessanger.phone }}</p>
+                {% endif %}
+                <p style="font-size: 15px; color: #07020D; font-weight: 500;">Місце: {{ pessanger.place }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 </body>
 </html>

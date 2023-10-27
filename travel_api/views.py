@@ -102,8 +102,7 @@ class PayCallbackView(View):
 
         order = update_order(payment_status)
         order_response = get_order_response(order, response)
-        send_mail_("Admin, було сформовано нове замовлення",
-                   create_message(order, order_response))
+        send_mail_with_html("Admin, було сформовано нове замовлення", {'data': order_response})
         # except Exception as e:
         #     send_mail_("Error - ошибка при создании заказа",
         #                f"Данные оплаты: {response}\n\nОшибка: {e}")

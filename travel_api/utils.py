@@ -2,6 +2,7 @@ import random
 import ssl
 
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from rest_framework.views import exception_handler
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -101,6 +102,12 @@ def send_mail_(subject, text, recipient="adm.ivm.it@gmail.com"):
     send_mail(subject, text, email_from, [recipient])
 
 
+def send_mail_with_html(subject, context, template_name='email/order_success.html', recipient="adm.ivm.it@gmail.com"):
+    email_from = settings.EMAIL_HOST_USER
+    html_content = render_to_string(template_name, context)
+    send_mail(subject, '', email_from, [recipient], html_message=html_content)
+
+
 def create_message(order, sumpaid):
     message = "Admin, було сформовано нове замовлення\nДеталі замовлення"
 
@@ -138,7 +145,7 @@ def get_passengers_info(order):
         {
             'name': passenger.name,
             'surname': passenger.surname,
-            'number': passenger.phone,
+            'phone': passenger.phone,
             'place': passenger.place_number
         }
         for passenger in passengers
