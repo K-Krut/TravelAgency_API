@@ -60,7 +60,8 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ['order', 'name', 'surname', 'phone', 'verification_code', 'is_primary_contact']
+    list_display = ['order', 'name', 'surname', 'phone', 'place_number',
+                    'verification_code', 'is_primary_contact']
     ordering = ['time_create']
     search_fields = ['name', 'surname', 'phone']
     list_filter = ['is_primary_contact', 'order']

@@ -1,8 +1,15 @@
+import random
+import ssl
+
+from django.shortcuts import redirect
 from rest_framework.views import exception_handler
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from .models import *
 
+from TravelAgency_API import settings
+from liqpayapi.liqpay3 import LiqPay
+from .models import *
+from django.core.mail import send_mail
 import smtplib
 
 
@@ -57,23 +64,10 @@ def create_order(order, place_number, name, surname, phone, price, is_primary_co
         )
 
 
-def send_mail(to_addr, subject, text):
-    msg = MIMEMultipart()
 
-    msg['From'] = "grachuxas@yandex.ru"
-    msg['To'] = to_addr
-    msg['Subject'] = subject
-
-    msg.attach(
-        MIMEText(text, 'plain')
-    )
-
-    server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
-    server.ehlo('grachuxas@yandex.ru')
-    server.login('grachuxas@yandex.ru', 'dagos527563')
-    server.auth_plain()
-    server.send_message(msg)
-    server.quit()
+def send_mail_(to_addr, subject, text):
+    email_from = settings.EMAIL_HOST_USER
+    send_mail(subject, text, email_from, [to_addr])
 
 
 def create_message(order, sumpaid):

@@ -4,6 +4,9 @@ import smtplib
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+from django.http import JsonResponse
+
 from TravelAgency_API import settings
 from liqpayapi.liqpay3 import LiqPay
 # from liqpay.liqpay3 import LiqPay
@@ -22,7 +25,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from .utils import send_mail, create_order, create_message
+from .utils import create_order, create_message, send_mail_
 from .models import *
 from .serializers import *
 
@@ -130,12 +133,12 @@ class PayCallbackView(View):
         })
 
         if payment_status['status'] == "error":
-            send_mail(
+            send_mail_(
                 to_addr="adm.ivm.it@gmail.com",
                 subject=f"Ошибка при оплате - {response['order_id']}",
                 text=f"Ошибка при оплате заказа №{response['order_id']}\n\nОшибка: {payment_status}"
             )
-            response_for_user = Response(payment_status)
+            response_for_user = JsonResponse(payment_status)
         else:
             try:
                 order = Order.objects.get(code=response['order_id'])
@@ -148,7 +151,7 @@ class PayCallbackView(View):
                                                                  'free_places', 'season', 'images')
                 tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
 
-                response_for_user = Response({
+                response_for_user = JsonResponse({
                     'tour': {
                         'id': order.tour.id,
                         'name': order.tour.name,
@@ -163,12 +166,12 @@ class PayCallbackView(View):
                     'order_code': response['order_id']
                 })
 
-                send_mail("adm.ivm.it@gmail.com", "Admin, було сформовано нове замовлення", create_message(order, response['amount']))
+                send_mail_("adm.ivm.it@gmail.com", "Admin, було сформовано нове замовлення", create_message(order, response['amount']))
             except Exception as e:
-                send_mail("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа", f"Данные оплаты: {response}\n\nОшибка: {e}")
-                response_for_user = Response({"Error": "Ошибка при создании заказа"})
+                send_mail_("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа", f"Данные оплаты: {response}\n\nОшибка: {e}")
+                response_for_user = JsonResponse({"Error": "Ошибка при создании заказа"})
 
-        return response_for_user
+        return response_for_user if response_for_user else JsonResponse({"Error": "Ошибка при создании заказа"})
 
 
 class OrderPaymentView(APIView):
