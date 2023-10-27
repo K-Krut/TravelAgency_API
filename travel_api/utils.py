@@ -98,6 +98,7 @@ def create_new_order(tour, request):
         paytype='pay'
     )
 
+
 def create_order_items(request, order, tour):
     current_free_places = tour.free_places
     for num, passenger in enumerate(request.data['passengers']):

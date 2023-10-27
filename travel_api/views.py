@@ -106,16 +106,19 @@ class PayCallbackView(View):
 
 class OrderPaymentView(APIView):
     def post(self, request, tour_id):
-        request.data['tour_id'] = tour_id
-        tour = Tour.objects.get(id=request.data['tour_id'])
-        if not check_order_cost(tour, request):
-            return JsonResponse({'error': 'You are trying to pay with incorrect cost'}, status=400)
         try:
-            order = create_new_order(tour, request)
+            request.data['tour_id'] = tour_id
+            tour = Tour.objects.get(id=request.data['tour_id'])
+            if not check_order_cost(tour, request):
+                return JsonResponse({'error': 'You are trying to pay with incorrect cost'}, status=400)
+            try:
+                order = create_new_order(tour, request)
+                create_order_items(request, order, tour)
+            except Exception as e:
+                return JsonResponse({'error': 'Failed Order creation in DB. ' + str(e)}, status=500)
+
+            signature, data = get_liqpay_pay_data(request, order, tour)
+            return JsonResponse({"data": data, "signature": signature})
+
         except Exception as e:
-            return JsonResponse({'error': 'Failed Order creation in DB. ' + str(e)}, status=500)
-        create_order_items(request, order, tour)
-
-        signature, data = get_liqpay_pay_data(request, order, tour)
-
-        return JsonResponse({"data": data, "signature": signature})
+            return JsonResponse({'error': str(e)}, status=400)
