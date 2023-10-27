@@ -107,20 +107,8 @@ class PayCallbackView(View):
             "version": "3",
             "order_id": response['order_id']
         })
-        print(payment_status)
-        p_s = {'result': 'ok', 'payment_id': 2384032214, 'action': 'pay', 'status': 'sandbox', 'version': 3,
-               'type': 'buy', 'paytype': 'card', 'public_key': 'sandbox_i19318155047', 'acq_id': 414963,
-               'order_id': '909197', 'liqpay_order_id': 'TGSBJFVY1698411243523086',
-               'description': 'Leeview - 3 passengers', 'sender_card_mask2': '535557*13',
-               'sender_card_bank': 'PUBLIC JOINT STOCK COMPANY AL', 'sender_card_type': 'mc',
-               'sender_card_country': 804, 'ip': '176.120.96.37', 'amount': 4128.0, 'currency': 'UAH',
-               'sender_commission': 0.0, 'receiver_commission': 61.92, 'agent_commission': 0.0, 'amount_debit': 4128.0,
-               'amount_credit': 4128.0, 'commission_debit': 0.0, 'commission_credit': 61.92, 'currency_debit': 'UAH',
-               'currency_credit': 'UAH', 'sender_bonus': 0.0, 'amount_bonus': 0.0, 'mpi_eci': '7', 'is_3ds': False,
-               'language': 'uk', 'create_date': 1698411243524, 'end_date': 1698411243581, 'transaction_id': 2384032214}
 
         if payment_status['status'] == "error":
-            print('payment_status["status"] == "error"')
             send_mail_(
                 to_addr="adm.ivm.it@gmail.com",
                 subject=f"Ошибка при оплате - {response['order_id']}",
@@ -128,18 +116,7 @@ class PayCallbackView(View):
             )
             response_for_user = JsonResponse(payment_status)
         else:
-            print(payment_status['status'])
-            # try:
-            print(Order.objects.get(code=response['order_id']))
-            # order = update_order(response)
-            order = Order.objects.get(code=response['order_id'])
-            order.status = OrderStatus.objects.get(id=4)
-            order.paytype = response.get('paytype')
-            order.sender_card_mask2 = response.get('sender_card_mask2')
-            order.receiver_commission = response.get('receiver_commission')
-            res = order.save()
-            print(res)
-            print('ORDER: ', order)
+            order = update_order(payment_status)
             tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price',
                                                              'free_places', 'season', 'images')
             tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
@@ -164,7 +141,6 @@ class PayCallbackView(View):
             #     send_mail_("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа",
             #                f"Данные оплаты: {response}\n\nОшибка: {e}")
             #     response_for_user = JsonResponse({"Error": "Ошибка при создании заказа"})
-
         return response_for_user if response_for_user else JsonResponse({"Error": "Ошибка при создании заказа"})
 
 

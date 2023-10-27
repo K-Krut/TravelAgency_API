@@ -89,10 +89,13 @@ def create_message(order, sumpaid):
 
 
 def update_order(response):
-    order = Order.objects.get(code=response['order_id'])
+    order = Order.objects.get(code=response.get('order_id'))
     order.status = OrderStatus.objects.get(id=4)
-    order.paytype = response['paytype']
-    order.sender_card_mask2 = response.get('sender_card_mask2')
-    order.receiver_commission = response['receiver_commission']
+    order.sum_paid = int(response.get('amount')) if response.get('amount') else 0
+    order.paytype = response.get('paytype')
+    order.sender_card_mask_2 = response.get('sender_card_mask2')
+    order.receiver_commission = response.get('receiver_commission')
     order.save()
     return order
+
+
