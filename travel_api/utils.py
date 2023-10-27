@@ -12,6 +12,8 @@ from .models import *
 from django.core.mail import send_mail
 import smtplib
 
+from .serializers import TourSerializer
+
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
@@ -111,8 +113,8 @@ def create_message(order, sumpaid):
 
     print(items)
 
-    for item in items:
-        message = message + f"\n\nІмʼя: {item.name} {item.surnamename}\nНомер: {item.phone}\nМісце: {item.place_number}"
+    # for item in items:
+    #     message = message + f"\n\nІмʼя: {item.name} {item.surnamename}\nНомер: {item.phone}\nМісце: {item.place_number}"
 
     print(message)
     return message
@@ -124,24 +126,37 @@ def send_payment_error_email(response, payment_status):
         text=f"Помилка оплати замовлення №{response.get('order_id')}\n\nПомилка: {payment_status}"
     )
 
+
+def update_tour_free_places(tour, places):
+    tour.free_places = tour.free_places - places
+    tour.save()
+
+
+def get_passengers_info(order):
+    passengers = OrderItem.objects.filter(order=order)
+    return [
+        {
+            'name': passenger.name,
+            'surname': passenger.surname,
+            'number': passenger.phone,
+            'place': passenger.place_number
+        }
+        for passenger in passengers
+    ]
+
+
 def get_tour_info_for_order(order, response):
     tour = Tour.objects.get(pk=order.tour.pk)
-    free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
-    print(order.tour)
-    print(tour)
-    print(tour.id)
+    tour_serializer = TourSerializer(tour)
+    # обновление количества свободных мест после заказа
+    passengers = get_passengers_info(order)
+    print(passengers)
+    update_tour_free_places(tour, len(passengers))
+    tour_data = tour_serializer.data
 
     return {
-        'tour': {
-            'id': tour.id,
-            'name': tour.name,
-            'date_start': tour.date_start,
-            'date_end': tour.date_end,
-            'price': tour.price,
-            'free_places': free_places,
-            'season': tour.season,
-            'images': [img.aws_url for img in Image.objects.filter(tour_image=tour)]
-        },
+        'tour': tour_data,
         'sumpaid': response.get('amount'),
-        'order_code': response.get('order_id')
+        'order_code': response.get('order_id'),
+        'passengers': passengers
     }
