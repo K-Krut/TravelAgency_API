@@ -120,7 +120,7 @@ class Order(models.Model):
     tour = models.ForeignKey(Tour, related_name='order', on_delete=models.DO_NOTHING)
     sum = models.IntegerField(verbose_name='Сума')
     sum_paid = models.IntegerField(verbose_name='Оплачена сума')
-    code = models.CharField(verbose_name='Номер замовлення')
+    code = models.CharField(verbose_name='Номер замовлення', unique=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     status = models.ForeignKey(to=OrderStatus, on_delete=models.DO_NOTHING)

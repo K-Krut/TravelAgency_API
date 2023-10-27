@@ -67,16 +67,13 @@ class FeaturedTours(generics.ListAPIView):
         queryset = Tour.objects.filter(is_featured=True)
         sorted_query = queryset.annotate(order_count=Count('order')).order_by('-order_count')
         paginator = TourPagination()
-
         page = paginator.paginate_queryset(sorted_query[:4], request=request)
-
         return paginator.get_paginated_response(FeaturedSerializer(page, many=True).data)
 
 
 class DetailsTour(APIView):
     def get(self, request, id):
         queryset = Tour.objects.get(id=id)
-
         return Response(DetailsSerializer(queryset, many=False).data)
 
 
@@ -114,16 +111,8 @@ class OrderPaymentView(APIView):
         if not check_order_cost(tour, request):
             return JsonResponse({'Error': 'You are trying to pay with incorrect cost'}, status=400)
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
-        code = random.randint(100000, 999999)
 
-        order = Order.objects.create(
-            tour=tour,
-            sum=request.data['cost'],
-            sum_paid=0,
-            code=code,
-            status=OrderStatus.objects.get(id=10),
-            paytype='pay'
-        )
+
 
         create_order_items(request, order, tour)
 
@@ -140,4 +129,4 @@ class OrderPaymentView(APIView):
         signature = liqpay.cnb_signature(params)
         data = liqpay.cnb_data(params)
 
-        return Response({"data": data, "signature": signature})
+        return JsonResponse({"data": data, "signature": signature})

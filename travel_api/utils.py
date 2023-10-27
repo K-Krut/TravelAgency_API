@@ -70,6 +70,24 @@ def get_liqpay_payment_status(response):
     })
 
 
+def generate_unique_code():
+    while True:
+        code = random.randint(100000, 999999)
+        if not Order.objects.filter(code=code).exists():
+            return code
+
+
+def create_new_order(tour, request):
+    code = generate_unique_code()
+    order = Order.objects.create(
+        tour=tour,
+        sum=request.data['cost'],
+        sum_paid=0,
+        code=code,
+        status=OrderStatus.objects.get(id=10),
+        paytype='pay'
+    )
+
 def create_order_items(request, order, tour):
     current_free_places = tour.free_places
     for num, passenger in enumerate(request.data['passengers']):
@@ -102,6 +120,13 @@ def send_mail_with_html(subject, context, template_name='email/order_success.htm
     send_mail(subject, '', email_from, [recipient], html_message=html_content)
 
 
+def send_payment_error_email(response, payment_status):
+    send_mail_(
+        subject=f"Помилка оплати - {response.get('order_id')}",
+        text=f"Помилка оплати замовлення №{response.get('order_id')}\n\nПомилка: {payment_status}"
+    )
+
+
 def get_phone_info(passenger):
     return f"Номер: {passenger['phone']}'\n" if passenger['phone'] else ''
 
@@ -117,13 +142,6 @@ def generate_successful_email(data):
            f"Назва туру: {data['tour']['name']}\n" \
            f"Дати: {data['tour']['date_start']} - {data['tour']['date_end']}\n\n" \
            f"Пасажири:\n{passengers_info}"
-
-
-def send_payment_error_email(response, payment_status):
-    send_mail_(
-        subject=f"Помилка оплати - {response.get('order_id')}",
-        text=f"Помилка оплати замовлення №{response.get('order_id')}\n\nПомилка: {payment_status}"
-    )
 
 
 def update_tour_free_places(tour, places):
