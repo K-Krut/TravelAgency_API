@@ -64,7 +64,6 @@ def create_order(order, place_number, name, surname, phone, price, is_primary_co
         )
 
 
-
 def send_mail_(to_addr, subject, text):
     email_from = settings.EMAIL_HOST_USER
     send_mail(subject, text, email_from, [to_addr])
@@ -87,3 +86,13 @@ def create_message(order, sumpaid):
 
     print(message)
     return message
+
+
+def update_order(response):
+    order = Order.objects.get(code=response['order_id'])
+    order.status = OrderStatus.objects.get(id=4)
+    order.paytype = response['paytype']
+    order.sender_card_mask2 = response.get('sender_card_mask2')
+    order.receiver_commission = response['receiver_commission']
+    order.save()
+    return order

@@ -1,21 +1,12 @@
-import datetime
 import random
-import smtplib
-
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
 from django.http import JsonResponse
-
 from TravelAgency_API import settings
 from liqpayapi.liqpay3 import LiqPay
-# from liqpay.liqpay3 import LiqPay
 from django.db.models import Count, F
 from django.core.exceptions import FieldError
 from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import render
 
 from rest_framework import filters
@@ -23,10 +14,7 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-
-from .utils import create_order, create_message, send_mail_
-from .models import *
+from .utils import create_order, create_message, send_mail_, update_order
 from .serializers import *
 
 
@@ -95,22 +83,10 @@ class PayView(TemplateView):
     template_name = 'billing/pay.html'
 
     def get(self, request, *args, **kwargs):
-        liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
-        params = {
-             'action': 'pay',
-             'amount': 1,
-             'currency': 'UAH',
-             'description': 'Payment for test',
-             'order_id': 'tes_id_10',
-             'version': '3',
-             'sandbox': 1,  # sandbox mode, set to 1 to enable it
-             'server_url': 'http://127.0.0.1:8000/pay-callback/',  # url to callback view
-        }
-        signature = liqpay.cnb_signature(params)
-        data = liqpay.cnb_data(params)
-        html = liqpay.cnb_form(params)
-
-        return render(request, self.template_name, {'signature': signature, 'data': data})
+        return render(request, self.template_name, {
+            'signature': request.GET.get('signature'),
+            'data': request.GET.get('data')
+        })
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -119,7 +95,7 @@ class PayCallbackView(View):
         response_for_user = None
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         data = request.GET.get('data')
-        signature = request.POST.get('signature')
+        signature = request.GET.get('signature')
         sign = liqpay.str_to_sign(f"{settings.LIQPAY_PRIVATE_KEY} + {data} + {settings.LIQPAY_PRIVATE_KEY}")
         if sign == signature:
             print('callback is valid')
@@ -131,8 +107,20 @@ class PayCallbackView(View):
             "version": "3",
             "order_id": response['order_id']
         })
+        print(payment_status)
+        p_s = {'result': 'ok', 'payment_id': 2384032214, 'action': 'pay', 'status': 'sandbox', 'version': 3,
+               'type': 'buy', 'paytype': 'card', 'public_key': 'sandbox_i19318155047', 'acq_id': 414963,
+               'order_id': '909197', 'liqpay_order_id': 'TGSBJFVY1698411243523086',
+               'description': 'Leeview - 3 passengers', 'sender_card_mask2': '535557*13',
+               'sender_card_bank': 'PUBLIC JOINT STOCK COMPANY AL', 'sender_card_type': 'mc',
+               'sender_card_country': 804, 'ip': '176.120.96.37', 'amount': 4128.0, 'currency': 'UAH',
+               'sender_commission': 0.0, 'receiver_commission': 61.92, 'agent_commission': 0.0, 'amount_debit': 4128.0,
+               'amount_credit': 4128.0, 'commission_debit': 0.0, 'commission_credit': 61.92, 'currency_debit': 'UAH',
+               'currency_credit': 'UAH', 'sender_bonus': 0.0, 'amount_bonus': 0.0, 'mpi_eci': '7', 'is_3ds': False,
+               'language': 'uk', 'create_date': 1698411243524, 'end_date': 1698411243581, 'transaction_id': 2384032214}
 
         if payment_status['status'] == "error":
+            print('payment_status["status"] == "error"')
             send_mail_(
                 to_addr="adm.ivm.it@gmail.com",
                 subject=f"Ошибка при оплате - {response['order_id']}",
@@ -140,36 +128,42 @@ class PayCallbackView(View):
             )
             response_for_user = JsonResponse(payment_status)
         else:
-            try:
-                order = Order.objects.get(code=response['order_id'])
-                order.status = OrderStatus.objects.get(id=4)
-                order.paytype = response['paytype']
-                order.sender_card_mask2 = response.get('sender_card_mask2')
-                order.receiver_commission = response['receiver_commission']
-                order.save()
-                tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price',
-                                                                 'free_places', 'season', 'images')
-                tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
-
-                response_for_user = JsonResponse({
-                    'tour': {
-                        'id': order.tour.id,
-                        'name': order.tour.name,
-                        'date_start': order.tour.date_start,
-                        'date_end': order.tour.date_end,
-                        'price': order.tour.price,
-                        'free_places': order.tour.free_places,
-                        'season': order.tour.season,
-                        'images': Image.objects.filter(tour=order.tour).values('aws_url')
-                    },
-                    'sumpaid': response['amount'],
-                    'order_code': response['order_id']
-                })
-
-                send_mail_("adm.ivm.it@gmail.com", "Admin, було сформовано нове замовлення", create_message(order, response['amount']))
-            except Exception as e:
-                send_mail_("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа", f"Данные оплаты: {response}\n\nОшибка: {e}")
-                response_for_user = JsonResponse({"Error": "Ошибка при создании заказа"})
+            print(payment_status['status'])
+            # try:
+            print(Order.objects.get(code=response['order_id']))
+            # order = update_order(response)
+            order = Order.objects.get(code=response['order_id'])
+            order.status = OrderStatus.objects.get(id=4)
+            order.paytype = response.get('paytype')
+            order.sender_card_mask2 = response.get('sender_card_mask2')
+            order.receiver_commission = response.get('receiver_commission')
+            res = order.save()
+            print(res)
+            print('ORDER: ', order)
+            tour = Tour.objects.get(pk=order.tour.pk).values('id', 'name', 'date_start', 'date_end', 'price',
+                                                             'free_places', 'season', 'images')
+            tour.free_places = tour.free_places - len(OrderItem.objects.filter(order=order))
+            response_for_user = JsonResponse({
+                'tour': {
+                    'id': order.tour.id,
+                    'name': order.tour.name,
+                    'date_start': order.tour.date_start,
+                    'date_end': order.tour.date_end,
+                    'price': order.tour.price,
+                    'free_places': order.tour.free_places,
+                    'season': order.tour.season,
+                    'images': Image.objects.filter(tour=order.tour).values('aws_url')
+                },
+                'sumpaid': response['amount'],
+                'order_code': response['order_id']
+            })
+            print(response_for_user)
+            send_mail_("adm.ivm.it@gmail.com", "Admin, було сформовано нове замовлення",
+                       create_message(order, response['amount']))
+            # except Exception as e:
+            #     send_mail_("adm.ivm.it@gmail.com", "Error - ошибка при создании заказа",
+            #                f"Данные оплаты: {response}\n\nОшибка: {e}")
+            #     response_for_user = JsonResponse({"Error": "Ошибка при создании заказа"})
 
         return response_for_user if response_for_user else JsonResponse({"Error": "Ошибка при создании заказа"})
 
