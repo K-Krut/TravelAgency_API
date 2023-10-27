@@ -111,13 +111,14 @@ class OrderPaymentView(APIView):
     def post(self, request, tour_id):
         request.data['tour_id'] = tour_id
         tour = Tour.objects.get(id=request.data['tour_id'])
-        final_cost = tour.price * len(request.data['passengers'])
+        if not check_order_cost(tour, request):
+            return JsonResponse({'Error': 'You are trying to pay with incorrect cost'}, status=400)
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
         code = random.randint(100000, 999999)
 
         order = Order.objects.create(
             tour=tour,
-            sum=final_cost,
+            sum=request.data['cost'],
             sum_paid=0,
             code=code,
             status=OrderStatus.objects.get(id=10),
@@ -125,23 +126,10 @@ class OrderPaymentView(APIView):
         )
 
         create_order_items(request, order, tour)
-        # for passenger in request.data['passengers']:
-        #     place_number = tour.free_places - 1
-        #
-        #     create_order(
-        #         order,
-        #         place_number,
-        #         passenger['name'],
-        #         passenger['surname'],
-        #         passenger.get("phone", ""),
-        #         tour.price,
-        #         passenger.get('is_primary_contact', False),
-        #         code
-        #     )
 
         params = {
             'action': 'pay',
-            'amount': final_cost,
+            'amount': request.data['cost'],
             'currency': 'UAH',
             'description': f'Тур {tour.name} для {len(request.data["passengers"])} пасажирів',
             'order_id': code,

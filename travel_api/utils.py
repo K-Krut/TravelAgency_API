@@ -40,7 +40,6 @@ def create_liqpay_object(final_cost, queryset_name, passengers):
     }
 
 
-
 def update_order(response):
     order = Order.objects.get(code=response.get('order_id'))
     order.status = OrderStatus.objects.get(id=4)
@@ -85,6 +84,12 @@ def create_order_items(request, order, tour):
             is_primary_contact=passenger.get('is_primary_contact', False),
             verification_code=order.code
         )
+
+
+def check_order_cost(tour, request):
+    final_cost = tour.price * len(request.data['passengers'])
+    return final_cost == request.data['cost']
+
 
 def send_mail_(subject, text, recipient="adm.ivm.it@gmail.com"):
     email_from = settings.EMAIL_HOST_USER
