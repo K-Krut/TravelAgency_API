@@ -81,7 +81,6 @@ def create_new_order(tour, request):
         sum_paid=0,
         code=code,
         status=OrderStatus.objects.get(id=10),  # 10 correct id
-        paytype='pay'
     )
 
 

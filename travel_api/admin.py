@@ -68,10 +68,10 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['code', 'tour', 'sum_paid', 'time_created']
-    ordering = ['time_created']
+    list_display = ['code', 'tour', 'status', 'sum_paid', 'paytype', 'receiver_commission', 'time_created']
+    ordering = ['status', '-time_created']
     search_fields = ['name', 'description']
-    list_filter = ['tour']
+    list_filter = ['status', 'time_created', 'paytype', 'tour']
 
 
 admin.site.register(Tour, TourAdmin)
