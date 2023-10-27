@@ -108,23 +108,21 @@ def send_mail_with_html(subject, context, template_name='email/order_success.htm
     send_mail(subject, '', email_from, [recipient], html_message=html_content)
 
 
-def create_message(order, sumpaid):
-    message = "Admin, було сформовано нове замовлення\nДеталі замовлення"
+def get_phone_info(passenger):
+    return f"Номер: {passenger['phone']}'\n" if passenger['phone'] else ''
 
-    message = message + f"\nНомер замовлення: {order.code}"
-    message = message + f"\nСплачена сума: {sumpaid} грн"
-    message = message + f"Назва туру: {order.tour.name}\n\nДата початку: {order.tour.date_start}\n\nДата Кінця: {order.tour.date_end}"
-    message = message + "\n\nПасажири"
 
-    items = OrderItem.objects.filter(order=order)
-
-    print(items)
-
-    # for item in items:
-    #     message = message + f"\n\nІмʼя: {item.name} {item.surnamename}\nНомер: {item.phone}\nМісце: {item.place_number}"
-
-    print(message)
-    return message
+def create_message(data):
+    passengers_info = "\n\n".join([f"Клієнт №{ind + 1}\n"
+                                   f"Імʼя: {passenger['name']} {passenger['surname']}\n"
+                                   f"{get_phone_info(passenger)}"
+                                   f"Місце: {passenger['place']}" for ind, passenger in enumerate(data['passengers'])])
+    return f"Admin, було сформовано нове замовлення\nДеталі замовлення:\n\n" \
+           f"Номер замовлення: {data['order_code']}\n" \
+           f"Сплачена сума: {data['sumpaid']} грн\n" \
+           f"Назва туру: {data['tour']['name']}\n" \
+           f"Дати: {data['tour']['date_start']} - {data['tour']['date_end']}\n\n" \
+           f"Пасажири:\n{passengers_info}"
 
 
 def send_payment_error_email(response, payment_status):
