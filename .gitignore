@@ -8,3 +8,4 @@
 /.idea/vcs.xml
 /.idea/dataSources.xml
 **/__pycache__
+/images_faking/order.svg

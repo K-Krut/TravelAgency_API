@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @font-face {
+            font-family: "Namu";
+            src: url('NAMU-1910.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'Namu', sans-serif;
+            background: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h1 style="font-size: 60px; color: #1E7400; text-align: center;">Оплата пройшла успішно!</h1>
+        <h2>Номер замовлення: {{ data.order_code }}</h2>
+        <h2>Сплачено: {{ data.sumpaid }} ₴</h2>
+    </div>
+    <div >
+        <img src=f"{{ data.tour.images }}" alt="Tour Image" style="width: 311px; height: 200px; border-radius: 8px;">
+        <div>
+            <div>
+                <h3 style="font-size: 24px; color: #07020D;">{{ data.tour.name }}</h3>
+                <p style="font-size: 20px; color: #07020D;">{{data.tour.date_start}} — {{data.tour.date_end}}</p>
+            </div>
+            <div>
+                <p style="font-size: 20px; color: #07020D;">залишилось місць {{ 14 }}</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        {%  for pessanger in data.passengers %}
+            <div>
+                <p style="font-size: 20px; color: #07020D;">Клієнт №{{ forloop.counter }}</p>
+                <p style="font-size: 15px; color: #07020D; font-weight: 500;">Ім'я: {{ passenger.name}} {{ passenger.surname }}</p>
+                {% if pessanger.phone %}
+                    <p style="font-size: 15px; color: #07020D; font-weight: 500;">Номер: {{ pessanger.phone }}</p>
+                {% endif %}
+                <p style="font-size: 15px; color: #07020D; font-weight: 500;">Місце: {{ pessanger.place }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
