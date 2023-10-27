@@ -112,8 +112,7 @@ class OrderPaymentView(APIView):
             return JsonResponse({'Error': 'You are trying to pay with incorrect cost'}, status=400)
         liqpay = LiqPay(settings.LIQPAY_PUBLIC_KEY, settings.LIQPAY_PRIVATE_KEY)
 
-
-
+        order = create_new_order(tour, request)
         create_order_items(request, order, tour)
 
         params = {
@@ -121,7 +120,7 @@ class OrderPaymentView(APIView):
             'amount': request.data['cost'],
             'currency': 'UAH',
             'description': f'Тур {tour.name} для {len(request.data["passengers"])} пасажирів',
-            'order_id': code,
+            'order_id': order.code,
             'version': '3',
             'sandbox': 1,
             'server_url': f'{BASE_URL}/pay-callback/',

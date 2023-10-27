@@ -8,6 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from TravelAgency_API import settings
+from TravelAgency_API.settings import EMAIL_ADMIN_RECIPIENT
 from liqpayapi.liqpay3 import LiqPay
 from .models import *
 from django.core.mail import send_mail
@@ -79,7 +80,7 @@ def generate_unique_code():
 
 def create_new_order(tour, request):
     code = generate_unique_code()
-    order = Order.objects.create(
+    return Order.objects.create(
         tour=tour,
         sum=request.data['cost'],
         sum_paid=0,
@@ -87,6 +88,7 @@ def create_new_order(tour, request):
         status=OrderStatus.objects.get(id=10),
         paytype='pay'
     )
+
 
 def create_order_items(request, order, tour):
     current_free_places = tour.free_places
@@ -109,12 +111,12 @@ def check_order_cost(tour, request):
     return final_cost == request.data['cost']
 
 
-def send_mail_(subject, text, recipient="adm.ivm.it@gmail.com"):
+def send_mail_(subject, text, recipient=EMAIL_ADMIN_RECIPIENT):
     email_from = settings.EMAIL_HOST_USER
     send_mail(subject, text, email_from, [recipient])
 
 
-def send_mail_with_html(subject, context, template_name='email/order_success.html', recipient="adm.ivm.it@gmail.com"):
+def send_mail_with_html(subject, context, template_name='email/order_success.html', recipient=EMAIL_ADMIN_RECIPIENT):
     email_from = settings.EMAIL_HOST_USER
     html_content = render_to_string(template_name, context)
     send_mail(subject, '', email_from, [recipient], html_message=html_content)
