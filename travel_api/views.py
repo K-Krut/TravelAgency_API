@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
-from rest_framework import filters
+from rest_framework import filters, exceptions
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -26,12 +26,17 @@ class ToursList(generics.ListCreateAPIView):
     ordering_fields = ['name', 'free_places', 'price', 'date_start']
     ordering = ['name', 'free_places']
 
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+
+
     def get_queryset(self):
         queryset = Tour.objects.all().order_by(*self.ordering)
 
         seasons = self.request.query_params.getlist('season', [])
         if seasons:
             queryset = queryset.filter(season__name__in=seasons)
+
         durations = self.request.query_params.getlist('duration', [])
         if durations:
             queryset = Tour.objects.filter(
@@ -42,7 +47,7 @@ class ToursList(generics.ListCreateAPIView):
             try:
                 queryset = queryset.order_by(ordering)
             except FieldError:
-                return Response({'error': 'Sorting by incorrect field'})
+                raise exceptions.ParseError(detail=f"Unsupported ordering field: {ordering}")
 
         return queryset
 
@@ -52,7 +57,7 @@ class TourSearch(generics.ListAPIView):
     serializer_class = TourSerializer
     pagination_class = TourPagination
     filter_backends = [filters.SearchFilter]
-    search_fields = ['id', 'name']
+    search_fields = ['name']
 
 
 class FeaturedTours(generics.ListAPIView):
@@ -60,7 +65,12 @@ class FeaturedTours(generics.ListAPIView):
     pagination_class = TourPagination
 
     def get_queryset(self):
-        return get_featured_tours()
+        try:
+            return get_featured_tours()
+        except TimeoutError:
+            return Response({'error': 'Request timeout'}, status=503)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
 
 class DetailsTour(APIView):
     def get(self, request, id):
