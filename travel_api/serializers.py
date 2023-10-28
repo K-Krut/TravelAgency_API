@@ -1,6 +1,8 @@
+from itertools import groupby
+
 from rest_framework import serializers
 from django.forms.models import model_to_dict
-from django.db.models import F, ExpressionWrapper, fields
+from django.db.models import F, ExpressionWrapper, fields, Count
 from .models import *
 import datetime
 
@@ -82,15 +84,9 @@ class DetailsSerializer(serializers.ModelSerializer):
 
     def get_program(self, obj):
         tour_programs = obj.program.all().order_by('tour_days', 'order')
-
-        grouped_by_days = {}
-        for program in tour_programs:
-            day = program.tour_days.day
-            if day not in grouped_by_days:
-                grouped_by_days[day] = []
-            grouped_by_days[day].append(program.tour_option.name)
-
-        return [{"name": day, "options": options} for day, options in grouped_by_days.items()]
+        grouped_by_days = {key: list(group) for key, group in groupby(tour_programs, key=lambda p: p.tour_days.day)}
+        return [{"name": day, "options": [program.tour_option.name for program in group]} for day, group in
+                grouped_by_days.items()]
 
     def get_duration(self, obj):
         duration = obj.date_end - obj.date_start
