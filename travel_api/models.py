@@ -88,7 +88,7 @@ class AdditionalOption(models.Model):
     tour = models.ManyToManyField(Tour, verbose_name='Тур', related_name='adoption', blank=True)
     name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinValueValidator(3)])
     description = models.TextField(verbose_name='Опис', blank=True)
-    price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(1)])
+    price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(0)])
     time_create = models.DateTimeField(verbose_name='Дата створення', auto_now_add=True)
     time_update = models.DateTimeField(verbose_name='Дата створення', auto_now=True)
     icon = models.URLField(max_length=255, null=True, verbose_name='Іконка')
