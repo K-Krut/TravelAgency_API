@@ -96,7 +96,7 @@ def create_order_items(request, order, tour):
             phone=passenger.get("phone", ""),
             sum=tour.price,
             is_primary_contact=passenger.get('is_primary_contact', False),
-            verification_code=order.code
+            verification_code=random.randint(100000, 999999)
         )
 
 
@@ -183,6 +183,22 @@ def get_passengers_info(order):
 
 
 def get_order_response(order, response):
+    tour = Tour.objects.get(pk=order.tour.pk)
+    tour_serializer = TourSerializer(tour)
+
+    # обновление количества свободных мест после заказа
+    passengers = OrderItem.objects.filter(order=order)
+    update_tour_free_places(tour, len(passengers))
+    tour_data = tour_serializer.data
+
+    return {
+        'tour': tour_data,
+        'sumpaid': response.get('amount'),
+        'order_code': response.get('order_id')
+    }
+
+
+def get_client_order_response(order, response):
     tour = Tour.objects.get(pk=order.tour.pk)
     tour_serializer = TourSerializer(tour)
 
