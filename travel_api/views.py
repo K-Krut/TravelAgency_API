@@ -4,7 +4,7 @@ from TravelAgency_API import settings
 from TravelAgency_API.settings import BASE_URL
 from liqpayapi.liqpay3 import LiqPay
 from django.db.models import Count, F
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -73,9 +73,15 @@ class FeaturedTours(generics.ListAPIView):
 
 class DetailsTour(APIView):
     def get(self, request, id):
-        queryset = Tour.objects.get(id=id)
-        return Response(DetailsSerializer(queryset, many=False).data)
-
+        tour = Tour.objects.get(id=id)
+        try:
+            return JsonResponse(DetailsSerializer(tour, many=False).data)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Tour not found'}, status=404)
+        except TimeoutError:
+            return JsonResponse({'error': 'Request timeout'}, status=503)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
 class PayView(TemplateView):
     template_name = 'billing/pay.html'
