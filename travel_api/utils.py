@@ -1,4 +1,6 @@
 import random
+
+from django.db.models import Count
 from django.template.loader import render_to_string
 from rest_framework.views import exception_handler
 from TravelAgency_API import settings
@@ -7,6 +9,25 @@ from liqpayapi.liqpay3 import LiqPay
 from .models import *
 from django.core.mail import send_mail
 from .serializers import TourSerializer
+
+
+def get_n_most_popular_tours(limit):
+    return Tour.objects.all().annotate(order_count=Count('order')).order_by('-order_count')[:limit]
+
+
+def get_n_most_popular_non_featured_tours(limit):
+    return Tour.objects.all().filter(is_featured=False).annotate(order_count=Count('order')).order_by(
+        '-order_count')[:limit]
+
+
+def get_featured_tours(query_size=4):
+    queryset_featured = Tour.objects.filter(is_featured=True).annotate(order_count=Count('order')).order_by(
+        '-order_count')[:query_size]
+    if not queryset_featured:
+        return get_n_most_popular_tours(query_size)
+    if len(queryset_featured) < query_size:
+        return queryset_featured.union(get_n_most_popular_non_featured_tours(4 - len(queryset_featured)))
+    return queryset_featured
 
 
 def custom_exception_handler(exc, context):
