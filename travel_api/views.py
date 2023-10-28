@@ -56,12 +56,6 @@ class TourSearch(generics.ListAPIView):
 
 
 class FeaturedTours(generics.ListAPIView):
-    # queryset = Tour.objects.filter(is_featured=True)
-    # def get(self, request, **kwargs):
-    #     sorted_query = get_featured_tours()
-    #     paginator = TourPagination()
-    #     page = paginator.paginate_queryset(sorted_query[:4], request=request)
-    #     return paginator.get_paginated_response(FeaturedSerializer(page, many=True).data)
     serializer_class = TourSerializer
     pagination_class = TourPagination
 
