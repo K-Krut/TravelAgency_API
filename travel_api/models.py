@@ -31,7 +31,7 @@ class Tour(models.Model):
     description = models.TextField(verbose_name='Опис', blank=True)
     price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(1)])
     places = models.IntegerField(verbose_name='Кількість місць (Загальна)', validators=[MinValueValidator(1)])
-    free_places = models.IntegerField('Кількість вільних місць', validators=[MinValueValidator(1)])
+    free_places = models.IntegerField('Кількість вільних місць', validators=[MinValueValidator(0)])
     is_featured = models.BooleanField(verbose_name='Вибраний?', default=False)
     date_start = models.DateField(verbose_name='Дата почтаку', default=datetime.now())
     date_end = models.DateField(verbose_name='Дата кінця', default=datetime.now())
@@ -86,7 +86,7 @@ class Image(models.Model):
 
 class AdditionalOption(models.Model):
     tour = models.ManyToManyField(Tour, verbose_name='Тур', related_name='adoption', blank=True)
-    name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinValueValidator(3)])
+    name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinLengthValidator(3)])
     description = models.TextField(verbose_name='Опис', blank=True)
     price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(0)])
     time_create = models.DateTimeField(verbose_name='Дата створення', auto_now_add=True)
