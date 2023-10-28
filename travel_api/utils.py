@@ -96,7 +96,7 @@ def create_order_items(request, order, tour):
             phone=passenger.get("phone", ""),
             sum=tour.price,
             is_primary_contact=passenger.get('is_primary_contact', False),
-            verification_code=order.code
+            verification_code=random.randint(100000, 999999)
         )
 
 
