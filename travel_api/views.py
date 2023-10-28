@@ -56,8 +56,33 @@ class TourSearch(generics.ListAPIView):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
     pagination_class = TourPagination
-    filter_backends = [filters.SearchFilter]
+
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
+    ordering_fields = ['name', 'free_places', 'price', 'date_start']
+
+    def get_queryset(self):
+        queryset = super(TourSearch, self).get_queryset()
+
+        seasons = self.request.query_params.getlist('season', [])
+        if seasons:
+            queryset = queryset.filter(season__name__in=seasons)
+
+        durations = self.request.query_params.getlist('duration', [])
+        if durations:
+            for dur in durations:
+                end_date = F('date_start') + datetime.timedelta(days=int(dur))
+                queryset = queryset.filter(date_end=end_date)
+
+        ordering = self.request.query_params.get('ordering', '')
+        if ordering:
+            try:
+                queryset = queryset.order_by(ordering)
+            except FieldError:
+                return Response({'error': 'Sorting by incorrect field'})
+
+        return queryset
+
 
 
 class FeaturedTours(generics.ListAPIView):
