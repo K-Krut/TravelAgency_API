@@ -334,16 +334,29 @@ table {
 
 td,
 th {
-  font-size: 0.8125rem;
-  line-height: 1rem;
-  border-bottom: 1px solid var(--hairline-color);
+  font-size: 1.125rem;
+  line-height: normal;
+  border-bottom: none;
   vertical-align: top;
-  padding: 8px;
+  padding-block: 15px;
 }
 
 th {
-  font-weight: 600;
+  font-weight: normal;
   text-align: left;
+  padding-inline: 40px;
+}
+
+td {
+  padding-inline: 10px;
+}
+
+td:first-of-type {
+  padding-left: 0px;
+}
+
+td:last-child {
+  padding-right: 40px;
 }
 
 thead th,
@@ -366,6 +379,10 @@ thead th.required {
   color: var(--body-loud-color);
 }
 
+tbody tr:not(:last-child) {
+  border-bottom: 1px solid var(--hairline-color);
+}
+
 tr.alt {
   background: var(--darkened-bg);
 }
@@ -379,7 +396,7 @@ tr:nth-child(even),
 tr:nth-child(even) .errorlist,
 tr:nth-child(odd) + .row-form-errors,
 tr:nth-child(odd) + .row-form-errors .errorlist {
-  background: var(--darkened-bg);
+  background: var(--body-bg);
 }
 
 /* SORTABLE TABLES */
@@ -621,8 +638,10 @@ input[type="button"][disabled].default {
 /* MODULES */
 
 .module {
-  border: none;
-  margin-bottom: 30px;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
   background: var(--body-bg);
 }
 
@@ -653,9 +672,9 @@ input[type="button"][disabled].default {
 .module caption,
 .inline-group h2 {
   margin: 0;
-  padding: 8px;
-  font-weight: 400;
-  font-size: 0.8125rem;
+  padding: 15px 40px;
+  font-weight: 500;
+  font-size: 1.25rem;
   text-align: left;
   background: var(--primary);
   color: var(--header-link-color);
@@ -663,7 +682,7 @@ input[type="button"][disabled].default {
 
 .module caption,
 .inline-group h2 {
-  font-size: 0.75rem;
+  font-size: 1.25rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -799,23 +818,23 @@ div.breadcrumbs a:hover {
 .viewlink,
 .inlineviewlink {
   padding-left: 16px;
-  background: url(../img/icon-viewlink.svg) 0 1px no-repeat;
+  background: url(../img/icon-viewlink.svg) 0 center no-repeat;
 }
 
 .addlink {
   padding-left: 16px;
-  background: url(../img/icon-addlink.svg) 0 1px no-repeat;
+  background: url(../img/icon-addlink.svg) 0 center no-repeat;
 }
 
 .changelink,
 .inlinechangelink {
   padding-left: 16px;
-  background: url(../img/icon-changelink.svg) 0 1px no-repeat;
+  background: url(../img/icon-changelink.svg) 0 center no-repeat;
 }
 
 .deletelink {
   padding-left: 16px;
-  background: url(../img/icon-deletelink.svg) 0 1px no-repeat;
+  background: url(../img/icon-deletelink.svg) 0 center no-repeat;
 }
 
 a.deletelink:link,
@@ -960,9 +979,9 @@ a.deletelink:hover {
 
 #content-related {
   float: right;
-  width: 260px;
+  width: 300px;
   position: relative;
-  margin-right: -300px;
+  margin-right: -320px;
 }
 
 #footer {
@@ -983,7 +1002,7 @@ a.deletelink:hover {
 .colSM #content-related {
   float: left;
   margin-right: 0;
-  margin-left: -300px;
+  margin-left: -320px;
 }
 
 .colSM #content-main {
@@ -1002,7 +1021,7 @@ a.deletelink:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 40px;
+  padding: 20px 40px;
   background: var(--header-bg);
   color: var(--header-color);
   overflow: hidden;
@@ -1027,8 +1046,9 @@ a.deletelink:hover {
   padding: 0;
   margin: 0;
   margin-inline-end: 20px;
-  font-weight: 300;
-  font-size: 1.5rem;
+  font-weight: 500;
+  font-size: 1.25rem;
+  text-transform: uppercase;
   color: var(--header-branding-color);
 }
 
@@ -1062,22 +1082,30 @@ a.deletelink:hover {
 
 #user-tools {
   float: right;
-  margin: 0 0 0 20px;
+  margin: 0 0 0 40px;
   text-align: right;
+}
+
+#user-tools strong {
+  font-weight: 500;
+}
+
+#user-tools > a:first-of-type {
+  margin-left: 40px;
 }
 
 #user-tools,
 #logout-form button {
   padding: 0;
-  font-weight: 300;
-  font-size: 0.6875rem;
+  font-weight: 400;
+  font-size: 1rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
 #user-tools a,
 #logout-form button {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  border-bottom: none;
 }
 
 #user-tools a:focus,
@@ -1093,20 +1121,27 @@ a.deletelink:hover {
   margin-bottom: 1px;
 }
 
+.theme-toggle {
+  margin-inline-start: 40px !important;
+}
+
 /* SIDEBAR */
 
 #content-related {
-  background: var(--darkened-bg);
+  background: var(--body-bg);
 }
 
 #content-related .module {
   background: none;
+  border: 1px solid var(--border-color);
 }
 
 #content-related h3 {
+  font-size: 1.125rem;
+  font-weight: normal;
   color: var(--body-quiet-color);
-  padding: 0 16px;
-  margin: 0 0 16px;
+  padding: 0 40px;
+  margin: 0 0 15px;
 }
 
 #content-related h4 {
@@ -1114,8 +1149,10 @@ a.deletelink:hover {
 }
 
 #content-related p {
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: 40px;
+  padding-right: 40px;
+  margin-bottom: 15px;
+  font-size: 1rem;
 }
 
 #content-related .actionlist {
@@ -1130,11 +1167,12 @@ a.deletelink:hover {
 }
 
 #content-related .module h2 {
-  background: none;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--hairline-color);
-  font-size: 1.125rem;
+  background-color: var(--darkened-bg);
+  padding: 15px 40px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1.25rem;
+  text-transform: uppercase;
   color: var(--body-fg);
 }
 
