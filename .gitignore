@@ -9,3 +9,5 @@
 /.idea/dataSources.xml
 **/__pycache__
 /images_faking/order.svg
+/.DS_Store
+/images_faking/.DS_Store
