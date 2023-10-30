@@ -126,6 +126,11 @@ def check_order_cost(tour, request):
     return final_cost == request.data['cost']
 
 
+
+def check_tour_has_available_places(tour, request):
+    return tour.free_places >= len(request.data['passengers'])
+
+
 def send_mail_(subject, text, recipient=EMAIL_ADMIN_RECIPIENT):
     email_from = settings.EMAIL_HOST_USER
     send_mail(subject, text, email_from, [recipient])

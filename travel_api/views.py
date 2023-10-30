@@ -153,8 +153,17 @@ class OrderPaymentView(APIView):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
+
+        if not request.data.get('passengers') or len(request.data.get('passengers')) < 1:
+            return JsonResponse({'error': 'Number of passengers must be more than 1'}, status=400)
+
+        if not check_tour_has_available_places(tour, request):
+            return JsonResponse({'error': 'Not enough available places in this tour for your order'}, status=400)
+
         if not check_order_cost(tour, request):
             return JsonResponse({'error': 'You are trying to pay with incorrect cost'}, status=400)
+
+
         try:
             order = create_new_order(tour, request)
             create_order_items(request, order, tour)
