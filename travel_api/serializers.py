@@ -74,7 +74,9 @@ class DetailsSerializer(serializers.ModelSerializer):
         return [image.aws_url for image in obj.images.all()]
 
     def get_landmarks(self, obj):
-        return obj.option.filter(is_landmark=True).values('name', 'image_url')
+        # return obj.program.filter(is_landmark=True).values('tour_option__name', 'image_url')[:4]
+        return obj.program.filter(is_landmark=True).annotate(name=F('tour_option__name')).values('name',
+                                                                                                 'image_url')[:4]
 
     def get_additional_options(self, obj):
         return obj.adoption.filter().values('icon', 'name')
