@@ -42,7 +42,7 @@ def custom_exception_handler(exc, context):
 
 def update_order(response):
     order = Order.objects.get(code=response.get('order_id'))
-    order.status = OrderStatus.objects.get(id=444)  # correct id 4
+    order.status = OrderStatus.objects.get(id=4)  # correct id 4
     order.sum_paid = int(response.get('amount')) if response.get('amount') else 0
     order.paytype = response.get('paytype')
     order.sender_card_mask_2 = response.get('sender_card_mask2')

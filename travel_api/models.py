@@ -185,6 +185,8 @@ class TourProgram(models.Model):
     tour_days = models.ForeignKey(to=TourDay, on_delete=models.DO_NOTHING)
     tour_option = models.ForeignKey(to=TourDayOption, on_delete=models.DO_NOTHING)
     order = models.IntegerField(validators=[MinValueValidator(0)], default=1)
+    is_landmark = models.BooleanField(default=False)
+    image_url = models.URLField(null=True)
 
     def __str__(self):
         return self.tour.name
