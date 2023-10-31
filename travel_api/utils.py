@@ -126,7 +126,6 @@ def check_order_cost(tour, request):
     return final_cost == request.data['cost']
 
 
-
 def check_tour_has_available_places(tour, request):
     return tour.free_places >= len(request.data['passengers'])
 
@@ -150,19 +149,20 @@ def send_payment_error_email(response, payment_status):
 
 
 def get_phone_info(passenger):
-    return f"Номер: {passenger['phone']}'\n" if passenger['phone'] else ''
+    return f"Номер: {passenger.get('phone')}'\n" if passenger.get('phone') else ''
 
 
 def generate_order_successful_email(data):
     passengers_info = "\n\n".join([f"Клієнт №{ind + 1}\n"
-                                   f"Імʼя: {passenger['name']} {passenger['surname']}\n"
+                                   f"Імʼя: {passenger.get('name')} {passenger.get('surname')}\n"
                                    f"{get_phone_info(passenger)}"
-                                   f"Місце: {passenger['place']}" for ind, passenger in enumerate(data['passengers'])])
+                                   f"Місце: {passenger.get('place')}" for ind, passenger in
+                                   enumerate(data.get('passengers'))])
     return f"Admin, було сформовано нове замовлення\nДеталі замовлення:\n\n" \
-           f"Номер замовлення: {data['order_code']}\n" \
-           f"Сплачена сума: {data['sumpaid']} грн\n" \
-           f"Назва туру: {data['tour']['name']}\n" \
-           f"Дати: {data['tour']['date_start']} - {data['tour']['date_end']}\n\n" \
+           f"Номер замовлення: {data.get('order_code')}\n" \
+           f"Сплачена сума: {data.get('sumpaid')} грн\n" \
+           f"Назва туру: {data.get('tour').get('name')}\n" \
+           f"Дати: {data.get('tour').get('date_start')} - {data.get('tour').get('date_end')}\n\n" \
            f"Пасажири:\n{passengers_info}"
 
 
