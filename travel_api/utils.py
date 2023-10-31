@@ -152,14 +152,14 @@ def get_phone_info(passenger):
     return f"Номер: {passenger.get('phone')}'\n" if passenger.get('phone') else ''
 
 
-def generate_order_successful_email(data):
+def generate_order_successful_email(data, passengers):
     passengers_info = "-"
-    if data.get('passengers'):
+    if passengers:
         passengers_info = "\n\n".join([f"Клієнт №{ind + 1}\n"
                                        f"Імʼя: {passenger.get('name')} {passenger.get('surname')}\n"
                                        f"{get_phone_info(passenger)}"
                                        f"Місце: {passenger.get('place')}" for ind, passenger in
-                                       enumerate(data.get('passengers'))])
+                                       enumerate(passengers)])
     return f"Admin, було сформовано нове замовлення\nДеталі замовлення:\n\n" \
            f"Номер замовлення: {data.get('order_code')}\n" \
            f"Сплачена сума: {data.get('sumpaid')} грн\n" \
