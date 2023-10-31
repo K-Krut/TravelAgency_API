@@ -97,11 +97,25 @@ class FeaturedTours(generics.ListAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=500)
 
+
 class DetailsTour(APIView):
     def get(self, request, id):
         try:
             tour = Tour.objects.get(id=id)
             return Response(DetailsSerializer(tour, many=False).data)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Tour not found'}, status=404)
+        except TimeoutError:
+            return Response({'error': 'Request timeout'}, status=503)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+
+class OrderDetailsTour(APIView):
+    def get(self, request, id):
+        try:
+            tour = Tour.objects.get(id=id)
+            return Response(TourSerializer(tour, many=False).data)
         except ObjectDoesNotExist:
             return Response({'error': 'Tour not found'}, status=404)
         except TimeoutError:
