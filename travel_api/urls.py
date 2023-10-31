@@ -10,8 +10,9 @@ urlpatterns = [
     path('tours/<int:id>/', views.DetailsTour.as_view()),
 
     path('tours/<int:tour_id>/order/payment', views.OrderPaymentView.as_view()),
-    path(r'pay', views.PayView.as_view(), name='pay_view'),
-    path(r'pay-callback', views.PayCallbackView.as_view(), name='pay_callback'),
+    path('tours/<int:id>/order/info', views.OrderDetailsTour.as_view()),
+    path('pay', views.PayView.as_view()),
+    path('pay-callback', views.PayCallbackView.as_view()),
 ]
 
 if settings.DEBUG:
