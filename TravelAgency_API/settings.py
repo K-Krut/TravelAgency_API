@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'travel_api.apps.TravelApiConfig',
     'django_filters',
     'rest_framework',
+    'modeltranslation',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -123,10 +124,24 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
+LANGUAGE_CODE = 'uk'
 
-LANGUAGE_CODE = "uk-UA"
+LANGUAGES = [
+    ('uk', 'Ukrainian'),
+    ('ru', 'Russian'),
+]
 
-TIME_ZONE = "Europe/Moscow"
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'uk'
+MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'uk'
+# MODELTRANSLATION_LANGUAGES = ['ru', ]
+MODELTRANSLATION_FALLBACK_LANGUAGES = {
+    'default': ('uk', 'ru'),
+    'uk': ('uk', 'ru'),
+    'ru': ('ru', 'uk'),
+}
+
+
+TIME_ZONE = "Europe/Kiev"
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
