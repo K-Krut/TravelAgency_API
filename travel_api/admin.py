@@ -117,7 +117,7 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_display = ['order', 'name', 'surname', 'phone', 'place_number',
                     'verification_code', 'is_primary_contact']
     ordering = ['time_create']
-    search_fields = ['name', 'surname', 'phone']
+    search_fields = ['name', 'surname', 'phone', 'order__code']
     list_filter = ['is_primary_contact', 'order']
 
 
