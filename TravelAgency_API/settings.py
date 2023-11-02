@@ -27,7 +27,6 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
     '127.0.0.1',
-    'localhost:3000',
 ]
 
 # Application definition
@@ -37,6 +36,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'modeltranslation',
+    'corsheaders',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -65,7 +65,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 ROOT_URLCONF = "TravelAgency_API.urls"
 
