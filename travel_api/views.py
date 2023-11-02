@@ -8,13 +8,16 @@ from django.shortcuts import render
 from rest_framework import filters, exceptions, status
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.settings import api_settings
+from rest_framework.exceptions import PermissionDenied
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .utils import *
 from .serializers import *
 import jwt
+
 
 class TourPagination(PageNumberPagination):
     page_size = 8
@@ -198,7 +201,7 @@ class CheckOrderCodeView(APIView):
 
         try:
             order = Order.objects.get(code=order_code)
-        except Order.DoesNotExist:
+        except ObjectDoesNotExist:
             return Response({"detail": "Order not found"}, status=404)
 
         verification_code = get_user_code(order)
@@ -214,3 +217,29 @@ class CheckOrderCodeView(APIView):
         }
         token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
         return Response({"token": token}, status=200)
+
+
+
+class ClientOrderInfoView(APIView):
+
+    def get(self, request):
+        print(request)
+        token = request.headers.get('Authorization').split(' ')[1]
+        print(request.headers.get('Authorization'))
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            print(payload)
+            order_code = payload.get('order_code')
+            if not order_code:
+                raise ValueError("Order code is missing in the token.")
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, ValueError):
+            raise PermissionDenied("Invalid or expired token.")
+
+        try:
+            order = Order.objects.get(code=order_code)
+        except ObjectDoesNotExist:
+            return Response({"error": "Invalid token. Order not found."}, status=404)
+
+        response_data = get_client_order_response(order)
+
+        return Response(response_data, status=200)

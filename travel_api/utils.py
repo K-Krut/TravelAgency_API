@@ -226,19 +226,17 @@ def get_order_response(order, response):
     }
 
 
-def get_client_order_response(order, response):
+def get_client_order_response(order):
     tour = Tour.objects.get(pk=order.tour.pk)
     tour_serializer = TourSerializer(tour)
 
-    # обновление количества свободных мест после заказа
     passengers = get_passengers_info(order)
-    update_tour_free_places(tour, len(passengers))
     tour_data = tour_serializer.data
 
     return {
         'tour': tour_data,
-        'sumpaid': response.get('amount'),
-        'order_code': response.get('order_id'),
+        'sumpaid': order.sum_paid,
+        'order_code': order.code,
         'passengers': passengers
     }
 
