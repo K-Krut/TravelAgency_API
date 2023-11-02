@@ -127,7 +127,7 @@ class Order(models.Model):
     receiver_commission = models.CharField(max_length=255, verbose_name="Liqpay комісія", null=True, blank=True)
 
     def __str__(self):
-        return self.tour.name
+        return f'{self.code} - {self.tour.name}'
 
     class Meta:
         verbose_name_plural = 'Замовлення'

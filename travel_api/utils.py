@@ -241,3 +241,9 @@ def get_client_order_response(order, response):
         'order_code': response.get('order_id'),
         'passengers': passengers
     }
+
+
+def get_user_code(order):
+    contact_point = OrderItem.objects.get(order=order, is_primary_contact=True)
+    return contact_point.verification_code
+

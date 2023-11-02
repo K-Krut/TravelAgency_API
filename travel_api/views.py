@@ -5,14 +5,16 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
-from rest_framework import filters, exceptions
+from rest_framework import filters, exceptions, status
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_jwt.settings import api_settings
+
 from .utils import *
 from .serializers import *
-
+import jwt
 
 class TourPagination(PageNumberPagination):
     page_size = 8
@@ -188,3 +190,27 @@ class OrderPaymentView(APIView):
             send_mail_("Помилка при отриманні даних для оплати від LiqPay", str(e))
             return JsonResponse({'error': 'Attempt to retrieve data for payment from Liqpay failed.' + str(e)},
                                 status=500)
+
+
+class CheckOrderCodeView(APIView):
+    def post(self, request, order_code):
+        code = request.data.get('code')
+
+        try:
+            order = Order.objects.get(code=order_code)
+        except Order.DoesNotExist:
+            return Response({"detail": "Order not found"}, status=404)
+
+        verification_code = get_user_code(order)
+        if not verification_code:
+            return Response({"detail": "Can not get verification code."}, status=500)
+
+        if verification_code != code:
+            return Response({"detail": "Invalid verification code."}, status=400)
+
+        payload = {
+            'order_code': order.code,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        }
+        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+        return Response({"token": token}, status=200)

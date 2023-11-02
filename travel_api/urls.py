@@ -13,6 +13,8 @@ urlpatterns = [
     path('tours/<int:id>/order/info', views.OrderDetailsTour.as_view()),
     path(r'pay', views.PayView.as_view()),
     path(r'pay-callback', views.PayCallbackView.as_view()),
+
+    path('order/client-info/<int:order_code>/check-code', views.CheckOrderCodeView.as_view()),
 ]
 
 if settings.DEBUG:
