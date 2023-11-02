@@ -94,7 +94,7 @@ class StatusAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-class SeasonAdmin(admin.ModelAdmin):
+class SeasonAdmin(TabbedTranslationAdmin):
     list_display = ['name']
     ordering = ['name']
     search_fields = ['name']
