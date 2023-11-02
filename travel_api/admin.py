@@ -60,7 +60,7 @@ class AdditionalOptionAdmin(admin.ModelAdmin):
     get_icon.short_description = 'Icon'
 
 
-class OptionAdmin(admin.ModelAdmin):
+class OptionAdmin(TabbedTranslationAdmin):
     exclude = ['is_landmark', 'image_url']
     list_display = ('name', 'get_icon')
     ordering = ['name']
