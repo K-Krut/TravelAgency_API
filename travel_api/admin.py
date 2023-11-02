@@ -47,7 +47,7 @@ class TourDayAdmin(admin.ModelAdmin):
     search_fields = ['day']
 
 
-class AdditionalOptionAdmin(admin.ModelAdmin):
+class AdditionalOptionAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'price', 'get_icon')
     ordering = ['name']
     search_fields = ('name', 'description')
