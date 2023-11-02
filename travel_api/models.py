@@ -1,7 +1,5 @@
 from django.db import models
-from django.core.validators import RegexValidator
-from django.core.validators import MaxValueValidator, MinValueValidator, MinLengthValidator
-from datetime import datetime
+from django.core.validators import MinValueValidator, MinLengthValidator
 
 
 class Status(models.Model):
@@ -85,13 +83,13 @@ class Image(models.Model):
 
 
 class AdditionalOption(models.Model):
-    tour = models.ManyToManyField(Tour, verbose_name='Тур', related_name='adoption', blank=True)
     name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinLengthValidator(3)])
     description = models.TextField(verbose_name='Опис', blank=True)
     price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(0)])
+    icon = models.URLField(max_length=255, null=True, verbose_name='Іконка')
+    tour = models.ManyToManyField(Tour, verbose_name='Тур', related_name='adoption', blank=True)
     time_create = models.DateTimeField(verbose_name='Дата створення', auto_now_add=True)
     time_update = models.DateTimeField(verbose_name='Дата створення', auto_now=True)
-    icon = models.URLField(max_length=255, null=True, verbose_name='Іконка')
 
     def __str__(self):
         return self.name
@@ -167,11 +165,11 @@ class TourDay(models.Model):
 
 class TourDayOption(models.Model):
     name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], verbose_name='Назва')
-    description = models.TextField(blank=True)
-    image_url = models.URLField(null=True)
-    date_start = models.DateTimeField(blank=True)
-    date_end = models.DateTimeField(blank=True)
-    is_landmark = models.BooleanField(default=False)
+    description = models.TextField(blank=True, verbose_name='Опис')
+    image_url = models.URLField(null=True, verbose_name='Зображення')
+    is_landmark = models.BooleanField(default=False, verbose_name='Визначне місце?')
+    date_start = models.DateTimeField(blank=True, verbose_name='Дата початку')
+    date_end = models.DateTimeField(blank=True, verbose_name='Дата кінця')
 
     def __str__(self):
         return self.name

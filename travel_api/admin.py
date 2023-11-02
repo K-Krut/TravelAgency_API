@@ -47,7 +47,7 @@ class TourDayAdmin(admin.ModelAdmin):
     search_fields = ['day']
 
 
-class AdditionalOptionAdmin(admin.ModelAdmin):
+class AdditionalOptionAdmin(TabbedTranslationAdmin):
     list_display = ('name', 'price', 'get_icon')
     ordering = ['name']
     search_fields = ('name', 'description')
@@ -55,12 +55,12 @@ class AdditionalOptionAdmin(admin.ModelAdmin):
 
     def get_icon(self, obj):
         return mark_safe(f'<a href="{obj.icon}" target="_blank">'
-                         f'<img src="{obj.icon}" width="50" height="60">') if obj.icon else None
+                         f'<img src="{obj.icon}" width=auto height="60">') if obj.icon else None
 
     get_icon.short_description = 'Icon'
 
 
-class OptionAdmin(admin.ModelAdmin):
+class OptionAdmin(TabbedTranslationAdmin):
     exclude = ['is_landmark', 'image_url']
     list_display = ('name', 'get_icon')
     ordering = ['name']
@@ -69,9 +69,23 @@ class OptionAdmin(admin.ModelAdmin):
 
     def get_icon(self, obj):
         return mark_safe(f'<a href="{obj.icon}" target="_blank">'
-                         f'<img src="{obj.icon}" width="50" height="60">') if obj.icon else None
+                         f'<img src="{obj.icon}" width=auto height="60">') if obj.icon else None
 
     get_icon.short_description = 'Icon'
+
+
+
+class TourDayOptionAdmin(TabbedTranslationAdmin):
+    list_display = ('name', 'is_landmark', 'get_image_url')
+    ordering = ['name']
+    search_fields = ['name']
+    list_filter = ['is_landmark', 'date_start']
+
+    def get_image_url(self, obj):
+        return mark_safe(f'<a href="{obj.image_url}" target="_blank">'
+                         f'<img src="{obj.image_url}" width=auto height="60">') if obj.image_url else None
+
+    get_image_url.short_description = 'Зображення'
 
 
 class StatusAdmin(admin.ModelAdmin):
@@ -123,6 +137,6 @@ admin.site.register(AdditionalOption, AdditionalOptionAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(TourDay, TourDayAdmin)
-admin.site.register(TourDayOption)
+admin.site.register(TourDayOption, TourDayOptionAdmin)
 admin.site.register(TourProgram, TourProgramAdmin)
 admin.site.register(OrderStatus)
