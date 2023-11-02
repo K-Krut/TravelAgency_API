@@ -32,25 +32,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         num_entries = kwargs['num_entries']
-
-        for _ in range(num_entries):
-            place = randint(25, 100)
-            dates = random_dates_within_month(2023, 10)
+        tours = Tour.objects.all()[:num_entries]
+        for tour in tours:
             city = fake.city()
             description = fake.paragraph(randint(4, 15))
-            Tour.objects.create(
-                name=translate_text(city, 'en_US', 'uk'),
-                name_ru=translate_text(city, 'en_US', 'ru'),
-                description=translate_text(description, 'en_US', 'uk'),
-                description_ru=translate_text(description, 'en_US', 'ru'),
-                price=randint(1000, 10000),
-                places=place,
-                free_places=place - randint(0, place),
-                is_featured=random.choice([True, False]),
-                date_start=dates[0],
-                date_end=dates[1],
-                status=random.choice(Status.objects.all()),
-                season=random.choice(Season.objects.all())
-            )
 
-        self.stdout.write(self.style.SUCCESS(f'Successfully generated {num_entries} fake data entries'))
+            tour.name = translate_text(city, 'en_US', 'uk')
+            tour.name_uk = translate_text(city, 'en_US', 'uk')
+            tour.name_ru = translate_text(city, 'en_US', 'ru')
+            tour.description = translate_text(description, 'en_US', 'uk')
+            tour.description_uk = translate_text(description, 'en_US', 'uk')
+            tour.description_ru = translate_text(description, 'en_US', 'ru')
+
+            tour.save()
+
+        self.stdout.write(self.style.SUCCESS(f'Successfully updated {num_entries}'))

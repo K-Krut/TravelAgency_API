@@ -1,11 +1,12 @@
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin
 from django.utils.safestring import mark_safe
 from django.utils import formats
 from .models import *
 
 
-class TourAdmin(admin.ModelAdmin):
-    list_display = ('name', 'formatted_date_start', 'formatted_date_end', 'price_with_currency', 'get_image')
+class TourAdmin(TabbedTranslationAdmin):
+    list_display = ('name', 'formatted_date_start', 'formatted_date_end', 'price_with_currency', 'get_image', 'id')
     list_filter = ('season', 'is_featured', 'date_start', 'status')
     ordering = ['status', 'name']
     search_fields = ['name', 'description']
