@@ -6,7 +6,7 @@ from .models import *
 
 
 class TourAdmin(TabbedTranslationAdmin):
-    list_display = ('name', 'formatted_date_start', 'formatted_date_end', 'price_with_currency', 'get_image')
+    list_display = ('name', 'formatted_date_start', 'formatted_date_end', 'price_with_currency', 'get_image', 'id')
     list_filter = ('season', 'is_featured', 'date_start', 'status')
     ordering = ['status', 'name']
     search_fields = ['name', 'description']

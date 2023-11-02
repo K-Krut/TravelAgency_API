@@ -26,7 +26,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
-    '127.0.0.1'
+    '127.0.0.1',
+    'localhost:3000',
 ]
 
 # Application definition
