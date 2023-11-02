@@ -223,12 +223,9 @@ class CheckOrderCodeView(APIView):
 class ClientOrderInfoView(APIView):
 
     def get(self, request):
-        print(request)
         token = request.headers.get('Authorization').split(' ')[1]
-        print(request.headers.get('Authorization'))
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-            print(payload)
             order_code = payload.get('order_code')
             if not order_code:
                 raise ValueError("Order code is missing in the token.")
