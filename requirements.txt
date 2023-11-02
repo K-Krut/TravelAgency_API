@@ -21,7 +21,6 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 factory-boy==3.3.0
 Faker==19.3.0
-googletrans==4.0.0rc1
 gunicorn==21.2.0
 h11==0.9.0
 h2==3.2.0
@@ -30,7 +29,7 @@ hstspreload==2023.1.1
 httpcore==0.9.1
 httpx==0.13.3
 hyperframe==5.2.0
-idna==3.4
+idna==2.*
 jmespath==1.0.1
 liqpay==1.0.1
 liqpay-python==1.0
