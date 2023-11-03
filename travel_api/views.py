@@ -5,14 +5,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
-from rest_framework import filters, exceptions, status
+from rest_framework import filters, exceptions
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .utils import *
 from .serializers import *
