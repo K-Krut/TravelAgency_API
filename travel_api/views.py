@@ -202,21 +202,20 @@ class CheckOrderCodeView(APIView):
         try:
             order = Order.objects.get(code=order_code)
         except ObjectDoesNotExist:
-            return Response({"detail": "Order not found"}, status=404)
+            return Response({"error": "Order not found"}, status=404)
 
         verification_code = get_user_code(order)
         if not verification_code:
-            return Response({"detail": "Can not get verification code."}, status=500)
+            return Response({"error": "Can not get verification code."}, status=500)
 
         if verification_code != code:
-            return Response({"detail": "Invalid verification code."}, status=400)
+            return Response({"error": "Invalid verification code."}, status=400)
 
         payload = {
             'order_code': order.code,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-        return Response({"token": token}, status=200)
+        return Response({"token": jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')}, status=200)
 
 
 
@@ -228,9 +227,9 @@ class ClientOrderInfoView(APIView):
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
             order_code = payload.get('order_code')
             if not order_code:
-                raise ValueError("Order code is missing in the token.")
+                return Response({"error": "Invalid token. Order code is missing in the token."}, status=404)
         except (jwt.ExpiredSignatureError, jwt.DecodeError, ValueError):
-            raise PermissionDenied("Invalid or expired token.")
+            raise PermissionDenied(detail="Invalid or expired token.")
 
         try:
             order = Order.objects.get(code=order_code)

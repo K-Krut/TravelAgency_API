@@ -46,7 +46,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DATETIME_FORMAT': '%Y-%m-%d',
     'ORDERING_PARAM': 'sort',
-    'EXCEPTION_HANDLER': 'travel_api.utils.custom_exception_handler',
+    # 'EXCEPTION_HANDLER': 'travel_api.utils.custom_exception_handler',
 }
 
 MIDDLEWARE = [
