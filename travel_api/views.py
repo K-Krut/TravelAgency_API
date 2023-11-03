@@ -167,13 +167,13 @@ class PayCallbackView(View):
 
 
 class OrderPaymentSuccessfulView(APIView):
-    def get(self, request):
+    def post(self, request):
         token = request.headers.get('Authorization').split(' ')[1]
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
             order_id = payload.get('order_pk')
             if not order_id:
-                return Response({"error": "Invalid token. Order code is missing in the token."}, status=404)
+                return Response({"error": "Invalid token. Order is missing in the token."}, status=404)
         except (jwt.ExpiredSignatureError, jwt.DecodeError, ValueError):
             raise PermissionDenied(detail="Invalid or expired token.")
 

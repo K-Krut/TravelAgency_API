@@ -235,7 +235,7 @@ def get_order_successful_response(order):
 
     return {
         'tour': tour_serializer.data,
-        'sumpaid': order.sum_paids,
+        'sumpaid': order.sum_paid,
         'order_code': order.code
     }
 
