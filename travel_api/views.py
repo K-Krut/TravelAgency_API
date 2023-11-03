@@ -183,7 +183,7 @@ class OrderPaymentSuccessfulView(APIView):
         try:
             response_data = get_order_successful_response(order)
         except Exception as e:
-            return Response({"error": f"Can not get response info. {e}"}, status=404)
+            return Response({"error": f"Can not get response info. {e}"}, status=500)
 
         return Response(response_data, status=200)
 
@@ -265,6 +265,6 @@ class ClientOrderInfoView(APIView):
         try:
             response_data = get_client_order_response(order)
         except Exception as e:
-            return Response({"error": f"Can not get response info. {e}"}, status=404)
+            return Response({"error": f"Can not get response info. {e}"}, status=500)
 
         return Response(response_data, status=200)
