@@ -5,14 +5,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
-from rest_framework import filters, exceptions, status
+from rest_framework import filters, exceptions
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .utils import *
 from .serializers import *
@@ -156,9 +154,38 @@ class PayCallbackView(View):
             send_mail_(f"#ERROR із замовленням №{response.get('order_id')}",
                        generate_order_server_error_email(response, payment_status))
             return JsonResponse({'error': str(e)}, status=500)
+
         send_mail_("Admin, було успішно сформовано нове замовлення",
                    generate_order_successful_email(order_response, get_passengers_info(order)))
-        return JsonResponse(order_response)
+        payload = {
+            'order_pk': order.id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=48)
+        }
+        return JsonResponse({"token": jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')}, status=200)
+
+
+class OrderPaymentSuccessfulView(APIView):
+    def post(self, request):
+        token = request.headers.get('Authorization').split(' ')[1]
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            order_id = payload.get('order_pk')
+            if not order_id:
+                return Response({"error": "Invalid token. Order is missing in the token."}, status=404)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, ValueError):
+            raise PermissionDenied(detail="Invalid or expired token.")
+
+        try:
+            order = Order.objects.get(pk=order_id)
+        except ObjectDoesNotExist:
+            return Response({"error": "Invalid token. Order not found."}, status=404)
+
+        try:
+            response_data = get_order_successful_response(order)
+        except Exception as e:
+            return Response({"error": f"Can not get response info. {e}"}, status=500)
+
+        return Response(response_data, status=200)
 
 
 class OrderPaymentView(APIView):
@@ -218,7 +245,6 @@ class CheckOrderCodeView(APIView):
         return Response({"token": jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')}, status=200)
 
 
-
 class ClientOrderInfoView(APIView):
 
     def get(self, request):
@@ -239,6 +265,6 @@ class ClientOrderInfoView(APIView):
         try:
             response_data = get_client_order_response(order)
         except Exception as e:
-            return Response({"error": f"Can not get response info. {e}"}, status=404)
+            return Response({"error": f"Can not get response info. {e}"}, status=500)
 
         return Response(response_data, status=200)

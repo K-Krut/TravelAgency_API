@@ -210,6 +210,8 @@ def get_passengers_info(order):
     ]
 
 
+
+
 def get_order_response(order, response):
     tour = Tour.objects.get(pk=order.tour.pk)
     tour_serializer = TourSerializer(tour)
@@ -217,6 +219,7 @@ def get_order_response(order, response):
     # обновление количества свободных мест после заказа
     passengers = OrderItem.objects.filter(order=order)
     update_tour_free_places(tour, len(passengers))
+
     tour_data = tour_serializer.data
 
     return {
@@ -226,18 +229,26 @@ def get_order_response(order, response):
     }
 
 
+def get_order_successful_response(order):
+    tour = Tour.objects.get(pk=order.tour.pk)
+    tour_serializer = TourSerializer(tour)
+
+    return {
+        'tour': tour_serializer.data,
+        'sumpaid': order.sum_paid,
+        'order_code': order.code
+    }
+
+
 def get_client_order_response(order):
     tour = Tour.objects.get(pk=order.tour.pk)
     tour_serializer = TourSerializer(tour)
 
-    passengers = get_passengers_info(order)
-    tour_data = tour_serializer.data
-
     return {
-        'tour': tour_data,
+        'tour': tour_serializer.data,
         'sumpaid': order.sum_paid,
         'order_code': order.code,
-        'passengers': passengers
+        'passengers': get_passengers_info(order)
     }
 
 
