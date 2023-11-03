@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'modeltranslation',
     'corsheaders',
-    'rest_framework_jwt',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
