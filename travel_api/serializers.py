@@ -1,4 +1,5 @@
 from itertools import groupby
+from django.utils.translation import get_language
 
 from rest_framework import serializers
 from django.forms.models import model_to_dict
@@ -74,9 +75,16 @@ class DetailsSerializer(serializers.ModelSerializer):
         return [image.aws_url for image in obj.images.all()]
 
     def get_landmarks(self, obj):
-        # return obj.program.filter(is_landmark=True).values('tour_option__name', 'image_url')[:4]
-        return obj.program.filter(is_landmark=True).annotate(name=F('tour_option__name')).values('name',
-                                                                                                 'image_url')[:4]
+        language = get_language()
+        landmarks = obj.program.filter(is_landmark=True)[:4]
+        result = [
+            {
+                "name": landmark.tour_option.name_ru if language == 'ru' and landmark.tour_option.name_ru else landmark.tour_option.name,
+                "image_url": landmark.tour_option.image_url
+            }
+            for landmark in landmarks
+        ]
+        return result
 
     def get_additional_options(self, obj):
         return obj.adoption.filter().values('icon', 'name')
