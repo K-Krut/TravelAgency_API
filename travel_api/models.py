@@ -110,8 +110,8 @@ class OrderStatus(models.Model):
         return self.status
 
     class Meta:
-        verbose_name = "Статусы"
-        verbose_name_plural = "Статусы заказов"
+        verbose_name = "Статуси"
+        verbose_name_plural = "Статуси замовлень"
 
 
 class Order(models.Model):
@@ -179,12 +179,12 @@ class TourDayOption(models.Model):
 
 
 class TourProgram(models.Model):
-    tour = models.ForeignKey(to=Tour, on_delete=models.DO_NOTHING, related_name='program')
-    tour_days = models.ForeignKey(to=TourDay, on_delete=models.DO_NOTHING)
-    tour_option = models.ForeignKey(to=TourDayOption, on_delete=models.DO_NOTHING)
-    order = models.IntegerField(validators=[MinValueValidator(0)], default=1)
-    is_landmark = models.BooleanField(default=False)
-    image_url = models.URLField(null=True)
+    tour = models.ForeignKey(to=Tour, on_delete=models.DO_NOTHING, related_name='program', verbose_name='Тур')
+    tour_days = models.ForeignKey(to=TourDay, on_delete=models.DO_NOTHING, verbose_name='День програми')
+    tour_option = models.ForeignKey(to=TourDayOption, on_delete=models.DO_NOTHING, verbose_name='Опція')
+    order = models.IntegerField(validators=[MinValueValidator(0)], default=1, verbose_name='Порядок')
+    is_landmark = models.BooleanField(default=False, verbose_name='Визначне місце?')
+    image_url = models.URLField(null=True, verbose_name='Зображення')
 
     def __str__(self):
         return self.tour.name
