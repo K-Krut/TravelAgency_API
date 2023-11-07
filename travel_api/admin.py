@@ -22,7 +22,8 @@ class TourAdmin(TabbedTranslationAdmin):
     def get_image(self, obj):
         main_image = obj.images.filter(is_main=True).first()
         image = main_image.aws_url if main_image else None
-        return mark_safe(f'<a href="{image}" target="_blank">'
+        return mark_safe(f'<div>'
+						 f'<a href="{image}" target="_blank">'
                          f'<img src="{image}" width=auto height="100"></a>') if image else None
 
     get_image.short_description = 'Зображення'
