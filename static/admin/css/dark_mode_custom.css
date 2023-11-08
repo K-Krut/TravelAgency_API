@@ -34,6 +34,10 @@
     --hairline-color: var(--primary);
     /* --border-color: #353535; */
     --border-color: #d3dae0;
+    --darkened-border-color: #1d1d1d;
+
+    --input-border: var(--darkened-border-color);
+    --input-bg: var(--darkened-border-color);
 
     /* --error-fg: #e35f5f; */
     --error-fg: #ae0000;
@@ -90,6 +94,10 @@ html[data-theme="dark"] {
   --hairline-color: var(--primary);
   /* --border-color: #353535; */
   --border-color: #d3dae0;
+  --darkened-border-color: #1d1d1d;
+
+  --input-border: var(--darkened-border-color);
+  --input-bg: var(--darkened-border-color);
 
   /* --error-fg: #e35f5f; */
   --error-fg: #ae0000;
