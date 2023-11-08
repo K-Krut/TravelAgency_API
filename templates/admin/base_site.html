@@ -2,12 +2,15 @@
 {% load static %}
 
 {% block extrahead %}
-	{{ block.super }}
 	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/base_custom.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/dark_mode_custom.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/nav_sidebar_custom.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists_custom.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms_custom.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets_custom.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/login_custom.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'admin/css/responsive_custom.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'modeltranslation/css/tabbed_translation_fields_custom.css' %}">
 {% endblock %}
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}

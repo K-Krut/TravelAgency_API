@@ -41,6 +41,10 @@ html[data-theme="light"],
   --hairline-color: var(--primary);
   /* --border-color: #ccc; */
   --border-color: #d3dae0;
+  --darkened-border-color: var(--border-color);
+
+  --input-border: var(--primary);
+  --input-bg: transparent;
 
   /* --error-fg: #ba2121; */
   --error-fg: #ae0000;
@@ -586,6 +590,10 @@ select[multiple] {
   /* Allow HTML size attribute to override the height in the rule above. */
   height: auto;
   min-height: 150px;
+}
+
+#modeltranslation-main-switch {
+  margin-left: 10px;
 }
 
 /* FORM BUTTONS */
