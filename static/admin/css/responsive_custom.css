@@ -6,6 +6,23 @@ button {
   appearance: none;
 }
 
+@media (max-width: 1280px) {
+  .submit-row {
+    grid-template-rows: repeat(3, 1fr) !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .submit-row input {
+    width: fit-content !important;
+    grid-row: unset !important;
+  }
+
+  .submit-row input.default {
+    grid-row: unset !important;
+    grid-column: auto !important;
+  }
+}
+
 @media (max-width: 1024px) {
   /* Basic */
 
@@ -229,11 +246,13 @@ button {
   }
 
   .submit-row {
-    padding: 8px;
+    padding: 0px;
+    grid-template-columns: 1fr;
   }
 
-  .submit-row a.deletelink {
-    padding: 10px 7px;
+  .submit-row a.deletelink,
+  .submit-row a.closelink {
+    padding: 10px 20px !important;
   }
 
   .button,
@@ -573,7 +592,7 @@ button {
   /* Forms */
 
   .form-row {
-    padding: 15px 0;
+    padding: 16px 30px !important;
   }
 
   .aligned .form-row,
@@ -618,12 +637,19 @@ button {
   .aligned .form-row input,
   .aligned .form-row select,
   .aligned .form-row textarea {
-    flex: 1 1 auto;
+    flex: 0 0 auto !important;
     max-width: 100%;
   }
 
+  .colM .aligned .vLargeTextField,
+  .colM .aligned .vXMLLargeTextField {
+    width: 375px !important;
+  }
+
   .aligned .checkbox-row {
-    align-items: center;
+    align-items: flex-end !important;
+    flex-direction: row-reverse !important;
+    gap: 20px;
   }
 
   .aligned .checkbox-row input {
@@ -632,7 +658,7 @@ button {
   }
 
   .aligned .vCheckboxLabel {
-    flex: 1 0;
+    flex: 0 0 !important;
     padding: 1px 0 0 5px;
   }
 
@@ -844,10 +870,14 @@ button {
   /* Submit row */
 
   .submit-row {
-    padding: 10px;
-    margin: 0 0 15px;
+    padding: 0px !important;
+    margin: 40px 0 20px !important;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .submit-row input {
+    padding: 10px 20px !important;
   }
 
   .submit-row input,
