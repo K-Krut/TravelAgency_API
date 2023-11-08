@@ -104,6 +104,10 @@
   background: var(--selected-row);
 }
 
+#nav-sidebar .current-model a {
+  color: #07020d !important;
+}
+
 .main > #nav-sidebar + .content {
   max-width: calc(100% - 40px);
 }
