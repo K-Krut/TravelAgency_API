@@ -1211,10 +1211,56 @@ a.deletelink:hover {
   color: var(--body-fg);
 }
 
+.delete-confirmation #content {
+  padding-top: 0;
+}
+
+.delete-confirmation h1 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 40px;
+}
+
+.delete-confirmation p {
+  font-size: 1.25rem;
+  margin: 0px 0px 40px;
+}
+
+.delete-confirmation h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0px 0px 10px;
+}
+
+.delete-confirmation ul,
+.delete-confirmation ol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 30px;
+  margin: 0px 0px 40px;
+}
+
+.delete-confirmation li {
+  font-size: 1.125rem;
+}
+
+.delete-confirmation ul,
+.delete-confirmation ul li,
+.delete-confirmation ol,
+.delete-confirmation ol li {
+  list-style: none;
+}
+
+.delete-confirmation li ul {
+  margin: 8px 0px 0px;
+}
+
 .delete-confirmation form input[type="submit"] {
   background: var(--delete-button-bg);
-  border-radius: 4px;
-  padding: 10px 15px;
+  border-radius: 8px;
+  padding: 10px 40px;
+  font-size: 1.125rem;
   color: var(--button-fg);
 }
 
@@ -1225,21 +1271,33 @@ a.deletelink:hover {
 }
 
 .delete-confirmation form .cancel-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   vertical-align: middle;
-  height: 0.9375rem;
+  height: 1.5rem;
   line-height: 0.9375rem;
-  border-radius: 4px;
-  padding: 10px 15px;
+  border-radius: 8px;
+  padding: 10px 40px;
+  font-size: 1.125rem;
   color: var(--button-fg);
   background: var(--close-button-bg);
-  margin: 0 0 0 10px;
+  margin: 0;
 }
 
 .delete-confirmation form .cancel-link:active,
 .delete-confirmation form .cancel-link:focus,
 .delete-confirmation form .cancel-link:hover {
+  text-decoration: none;
   background: var(--close-button-hover-bg);
+}
+
+.delete-confirmation form div {
+  display: flex;
+  row-gap: 10px;
+  column-gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 /* POPUP */
