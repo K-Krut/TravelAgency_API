@@ -51,6 +51,13 @@ class FeaturedSerializer(serializers.ModelSerializer):
         return representation
 
 
+class SiteMapSerializer(serializers.ModelSerializer):
+    time_update = serializers.DateTimeField(format='%Y-%m-%dT%H:%M:%S.%fZ')
+    class Meta:
+        model = Tour
+        fields = ('id', 'time_update')
+
+
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
