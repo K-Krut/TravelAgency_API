@@ -179,6 +179,7 @@ class PayCallbackView(View):
 
         send_mail_("Admin, було успішно сформовано нове замовлення",
                    generate_order_successful_email(order_response, get_passengers_info(order)))
+        send_mail_("SMS sending test", generate_sms(order))
         payload = {
             'order_pk': order.id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=48)
@@ -246,8 +247,10 @@ class OrderPaymentView(APIView):
 
 class CheckOrderCodeView(APIView):
     def post(self, request, order_code):
-        code = request.data.get('code')
-
+        try:
+            code = request.data.get('code')
+        except Exception as e:
+            return Response({'error': 'Can not get code. ' + str(e)}, status=500)
         try:
             order = Order.objects.get(code=order_code)
         except ObjectDoesNotExist:

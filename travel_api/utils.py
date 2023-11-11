@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.template.loader import render_to_string
 from rest_framework.views import exception_handler
 from TravelAgency_API import settings
-from TravelAgency_API.settings import EMAIL_ADMIN_RECIPIENT, BASE_URL
+from TravelAgency_API.settings import EMAIL_ADMIN_RECIPIENT, BASE_URL, BASE_CLIENT_URL
 from liqpayapi.liqpay3 import LiqPay
 from .models import *
 from django.core.mail import send_mail
@@ -168,6 +168,18 @@ def generate_order_successful_email(data, passengers):
            f"Пасажири:\n{passengers_info}"
 
 
+def get_primary_contact_of_order(order):
+    return OrderItem.objects.get(order__code=order.code, is_primary_contact=True)
+
+
+def generate_sms(order):
+    passenger = get_primary_contact_of_order(order)
+    return f"Привіт {passenger.name if passenger else ''}!\n" \
+           f"Дякуємо за замовлення на сайті /НАЗВА САЙТУ/\n" \
+           f"Деталі твого замовлення: {BASE_CLIENT_URL + f'uk/order-verification?order_code={order.code}'}\n" \
+           f"Твій код для деталей замовлення: {passenger.verification_code}"
+
+
 def generate_order_bad_request_email(response, payment_status):
     return f"Хтось намагався зробити запит до API на перевірку статусу оплати " \
            f"та оновлення даних про замовлення в Базі Даних.\n" \
@@ -208,8 +220,6 @@ def get_passengers_info(order):
         }
         for passenger in passengers
     ]
-
-
 
 
 def get_order_response(order, response):
@@ -255,4 +265,3 @@ def get_client_order_response(order):
 def get_user_code(order):
     contact_point = OrderItem.objects.get(order=order, is_primary_contact=True)
     return contact_point.verification_code
-

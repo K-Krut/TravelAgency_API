@@ -168,3 +168,4 @@ EMAIL_HOST_PASSWORD = 'hkjo icdy bewp kuoo'
 EMAIL_ADMIN_RECIPIENT = "adm.ivm.it@gmail.com"
 
 BASE_URL = 'http://127.0.0.1:8000'
+BASE_CLIENT_URL = os.getenv('BASE_CLIENT_URL')
