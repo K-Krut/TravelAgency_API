@@ -484,7 +484,7 @@ table thead th.sorted .sortoptions a {
   width: 14px;
   height: 14px;
   display: inline-block;
-  background: url(../../../staticfiles/admin/img/sorting-icons.svg) 0 0 no-repeat;
+  background: url("../../../staticfiles/admin/img/sorting-icons.3a097b59f104.svg") 0 0 no-repeat;
   background-size: 14px auto;
 }
 
@@ -726,7 +726,7 @@ ul.messagelist li {
   font-size: 0.8125rem;
   padding: 10px 10px 10px 65px;
   margin: 0 0 10px 0;
-  background: var(--message-success-bg) url(../img/icon-addlink-custom.svg) 40px 12px
+  background: var(--message-success-bg) url("../img/icon-addlink-custom.44ea59af85fc.svg") 40px 12px
     no-repeat;
   background-size: 16px auto;
   color: var(--body-fg);
@@ -734,13 +734,13 @@ ul.messagelist li {
 }
 
 ul.messagelist li.warning {
-  background: var(--message-warning-bg) url(../../../staticfiles/admin/img/icon-alert.svg) 40px 14px
+  background: var(--message-warning-bg) url("../../../staticfiles/admin/img/icon-alert.034cc7d8a67f.svg") 40px 14px
     no-repeat;
   background-size: 14px auto;
 }
 
 ul.messagelist li.error {
-  background: var(--message-error-bg) url(../../../staticfiles/admin/img/icon-no.svg) 40px 12px
+  background: var(--message-error-bg) url("../../../staticfiles/admin/img/icon-no.439e821418cd.svg") 40px 12px
     no-repeat;
   background-size: 16px auto;
 }
@@ -841,23 +841,23 @@ div.breadcrumbs a:hover {
 .viewlink,
 .inlineviewlink {
   padding-left: 16px;
-  background: url(../../../staticfiles/admin/img/icon-viewlink.svg) 0 center no-repeat;
+  background: url("../../../staticfiles/admin/img/icon-viewlink.41eb31f7826e.svg") 0 center no-repeat;
 }
 
 .addlink {
   padding-left: 24px;
-  background: url(../img/icon-addlink-custom.svg) 0 center no-repeat;
+  background: url("../img/icon-addlink-custom.44ea59af85fc.svg") 0 center no-repeat;
 }
 
 .changelink,
 .inlinechangelink {
   padding-left: 22px;
-  background: url(../img/icon-changelink-custom.svg) 0 center no-repeat;
+  background: url("../../../staticfiles/admin/img/icon-changelink.d2c78e6ed1af.svg") 0 center no-repeat;
 }
 
 .deletelink {
   padding-left: 16px;
-  background: url(../../../staticfiles/admin/img/icon-deletelink.svg) 0 center no-repeat;
+  background: url("../../../staticfiles/admin/img/icon-deletelink.564ef9dc3854.svg") 0 center no-repeat;
 }
 
 a.deletelink:link,
@@ -923,11 +923,11 @@ a.deletelink:hover {
 }
 
 .object-tools a.viewsitelink {
-  background-image: url(../../../staticfiles/admin/img/tooltag-arrowright.svg);
+  background-image: url("../../../staticfiles/admin/img/tooltag-arrowright.bbfb788a849e.svg");
 }
 
 .object-tools a.addlink {
-  background-image: url(../img/tooltag-add-custom.svg);
+  background-image: url("../../../staticfiles/admin/img/tooltag-add.851fb9b6d9df.svg");
   background-position: right 40px center;
 }
 

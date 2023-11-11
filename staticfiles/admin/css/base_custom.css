@@ -484,7 +484,7 @@ table thead th.sorted .sortoptions a {
   width: 14px;
   height: 14px;
   display: inline-block;
-  background: url(../img/sorting-icons.svg) 0 0 no-repeat;
+  background: url(../../../staticfiles/admin/img/sorting-icons.svg) 0 0 no-repeat;
   background-size: 14px auto;
 }
 
@@ -726,7 +726,7 @@ ul.messagelist li {
   font-size: 0.8125rem;
   padding: 10px 10px 10px 65px;
   margin: 0 0 10px 0;
-  background: var(--message-success-bg) url(../../../staticfiles/admin/img/icon-addlink.svg) 40px 12px
+  background: var(--message-success-bg) url(../img/icon-addlink-custom.svg) 40px 12px
     no-repeat;
   background-size: 16px auto;
   color: var(--body-fg);
@@ -734,13 +734,13 @@ ul.messagelist li {
 }
 
 ul.messagelist li.warning {
-  background: var(--message-warning-bg) url(../img/icon-alert.svg) 40px 14px
+  background: var(--message-warning-bg) url(../../../staticfiles/admin/img/icon-alert.svg) 40px 14px
     no-repeat;
   background-size: 14px auto;
 }
 
 ul.messagelist li.error {
-  background: var(--message-error-bg) url(../img/icon-no.svg) 40px 12px
+  background: var(--message-error-bg) url(../../../staticfiles/admin/img/icon-no.svg) 40px 12px
     no-repeat;
   background-size: 16px auto;
 }
@@ -841,12 +841,12 @@ div.breadcrumbs a:hover {
 .viewlink,
 .inlineviewlink {
   padding-left: 16px;
-  background: url(../img/icon-viewlink.svg) 0 center no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-viewlink.svg) 0 center no-repeat;
 }
 
 .addlink {
   padding-left: 24px;
-  background: url(../../../staticfiles/admin/img/icon-addlink.svg) 0 center no-repeat;
+  background: url(../img/icon-addlink-custom.svg) 0 center no-repeat;
 }
 
 .changelink,

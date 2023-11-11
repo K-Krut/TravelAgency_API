@@ -1,4 +1,4 @@
-@import url("widgets.css");
+@import url("widgets.d5f9af3861d2.css");
 
 /* FORM ROWS */
 
@@ -540,7 +540,7 @@ body.popup .submit-row {
 .inline-group ul.tools a.add,
 .inline-group div.add-row a,
 .inline-group .tabular tr.add-row td a {
-  background: url(../img/icon-addlink-custom.svg) 0 1px no-repeat;
+  background: url("../img/icon-addlink-custom.44ea59af85fc.svg") 0 1px no-repeat;
   padding-left: 16px;
   font-size: 0.75rem;
 }
@@ -562,7 +562,7 @@ body.popup .submit-row {
 .related-lookup {
   width: 1rem;
   height: 1rem;
-  background-image: url(../img/search-custom.svg);
+  background-image: url("../../../staticfiles/admin/img/search.6623732e03fd.svg");
 }
 
 form .related-widget-wrapper ul {

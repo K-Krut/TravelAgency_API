@@ -123,7 +123,7 @@
   margin: 0;
   vertical-align: middle;
   background-color: var(--primary);
-  background-image: url("../../../staticfiles/admin/img/search.svg");
+  background-image: url("../img/search-custom.svg");
   background-position: center center;
   background-repeat: no-repeat;
   box-shadow: unset;

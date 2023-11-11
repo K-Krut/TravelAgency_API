@@ -134,7 +134,7 @@
 }
 
 .selector-add {
-  background: url(../img/selector-icons.svg) 0 -96px no-repeat;
+  background: url(../../../staticfiles/admin/img/selector-icons.svg) 0 -96px no-repeat;
 }
 
 .active.selector-add:focus,
@@ -143,7 +143,7 @@
 }
 
 .selector-remove {
-  background: url(../img/selector-icons.svg) 0 -64px no-repeat;
+  background: url(../../../staticfiles/admin/img/selector-icons.svg) 0 -64px no-repeat;
 }
 
 .active.selector-remove:focus,
@@ -295,7 +295,7 @@ a.active.selector-clearall:hover {
 }
 
 .selector .search-label-icon {
-  background: url(../../../staticfiles/admin/img/search.svg) 0 0 no-repeat;
+  background: url(../img/search-custom.svg) 0 0 no-repeat;
   display: inline-block;
   height: 1.125rem;
   width: 1.125rem;
@@ -351,7 +351,7 @@ table p.datetime {
 }
 
 .datetimeshortcuts .date-icon {
-  background: url(../../../staticfiles/admin/img/icon-calendar.svg) center center/cover no-repeat;
+  background: url(../img/icon-calendar-custom.svg) center center/cover no-repeat;
   top: -1px;
 }
 
