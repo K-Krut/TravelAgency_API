@@ -7,6 +7,7 @@ urlpatterns = [
     path('tours', views.ToursList.as_view()),
     path('tours/', views.TourSearch.as_view()),
     path('tours/featured', views.FeaturedTours.as_view()),
+    path('tours/sitemap/', views.SiteMapTours.as_view()),
     path('tours/<int:id>/', views.DetailsTour.as_view()),
 
     path('tours/<int:tour_id>/order/payment', views.OrderPaymentView.as_view()),

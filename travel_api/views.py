@@ -23,6 +23,13 @@ class TourPagination(PageNumberPagination):
     max_page_size = 10
 
 
+
+class TourSiteMapPagination(PageNumberPagination):
+    page_size = 50
+    page_size_query_param = 'page_size'
+    max_page_size = 60
+
+
 class ToursList(generics.ListCreateAPIView):
     serializer_class = TourSerializer
     pagination_class = TourPagination
@@ -93,6 +100,21 @@ class FeaturedTours(generics.ListAPIView):
     def get_queryset(self):
         try:
             return get_featured_tours()
+        except TimeoutError:
+            return Response({'error': 'Request timeout'}, status=503)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+
+class SiteMapTours(generics.ListAPIView):
+    queryset = Tour.objects.all().order_by('-id')
+    serializer_class = SiteMapSerializer
+    pagination_class = TourSiteMapPagination
+
+    def get_queryset(self):
+        queryset = super(SiteMapTours, self).get_queryset()
+        try:
+            return queryset
         except TimeoutError:
             return Response({'error': 'Request timeout'}, status=503)
         except Exception as e:
