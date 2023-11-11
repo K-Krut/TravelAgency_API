@@ -724,12 +724,12 @@ div.breadcrumbs a:focus, div.breadcrumbs a:hover {
 
 .addlink {
     padding-left: 16px;
-    background: url("../img/icon-addlink.d519b3bab011.svg") 0 1px no-repeat;
+    background: url("../img/icon-addlink.44ea59af85fc.svg") 0 1px no-repeat;
 }
 
 .changelink, .inlinechangelink {
     padding-left: 16px;
-    background: url("../img/icon-changelink.18d2fd706348.svg") 0 1px no-repeat;
+    background: url("../img/icon-changelink.d2c78e6ed1af.svg") 0 1px no-repeat;
 }
 
 .deletelink {
@@ -799,7 +799,7 @@ a.deletelink:focus, a.deletelink:hover {
 }
 
 .object-tools a.addlink {
-    background-image: url("../img/tooltag-add.e59d620a9742.svg");
+    background-image: url("../img/tooltag-add.851fb9b6d9df.svg");
 }
 
 /* OBJECT HISTORY */

@@ -275,7 +275,7 @@ a.active.selector-clearall:focus, a.active.selector-clearall:hover {
 }
 
 .selector .search-label-icon {
-    background: url("../img/search.7cf54ff789c6.svg") 0 0 no-repeat;
+    background: url("../img/search.6623732e03fd.svg") 0 0 no-repeat;
     display: inline-block;
     height: 1.125rem;
     width: 1.125rem;
@@ -328,7 +328,7 @@ table p.datetime {
 }
 
 .datetimeshortcuts .date-icon {
-    background: url("../img/icon-calendar.ac7aea671bea.svg") 0 0 no-repeat;
+    background: url("../img/icon-calendar.925cd2442e63.svg") 0 0 no-repeat;
     top: -1px;
 }
 

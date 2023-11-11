@@ -291,11 +291,11 @@ a.active.selector-clearall:hover {
 }
 
 .selector .selector-chosen .help-icon {
-  background: url(../img/icon-unknown-alt.svg) 0 0 no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-unknown-alt.svg) 0 0 no-repeat;
 }
 
 .selector .search-label-icon {
-  background: url(../img/search.svg) 0 0 no-repeat;
+  background: url(../../../staticfiles/admin/img/search.svg) 0 0 no-repeat;
   display: inline-block;
   height: 1.125rem;
   width: 1.125rem;
@@ -351,7 +351,7 @@ table p.datetime {
 }
 
 .datetimeshortcuts .date-icon {
-  background: url(../img/icon-calendar.svg) center center/cover no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-calendar.svg) center center/cover no-repeat;
   top: -1px;
 }
 

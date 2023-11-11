@@ -726,7 +726,7 @@ ul.messagelist li {
   font-size: 0.8125rem;
   padding: 10px 10px 10px 65px;
   margin: 0 0 10px 0;
-  background: var(--message-success-bg) url(../img/icon-yes.svg) 40px 12px
+  background: var(--message-success-bg) url(../../../staticfiles/admin/img/icon-addlink.svg) 40px 12px
     no-repeat;
   background-size: 16px auto;
   color: var(--body-fg);
@@ -846,18 +846,18 @@ div.breadcrumbs a:hover {
 
 .addlink {
   padding-left: 24px;
-  background: url(../img/icon-addlink.svg) 0 center no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-addlink.svg) 0 center no-repeat;
 }
 
 .changelink,
 .inlinechangelink {
   padding-left: 22px;
-  background: url(../img/icon-changelink.svg) 0 center no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-changelink.svg) 0 center no-repeat;
 }
 
 .deletelink {
   padding-left: 16px;
-  background: url(../img/icon-deletelink.svg) 0 center no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-deletelink.svg) 0 center no-repeat;
 }
 
 a.deletelink:link,
@@ -923,11 +923,11 @@ a.deletelink:hover {
 }
 
 .object-tools a.viewsitelink {
-  background-image: url(../img/tooltag-arrowright.svg);
+  background-image: url(../../../staticfiles/admin/img/tooltag-arrowright.svg);
 }
 
 .object-tools a.addlink {
-  background-image: url(../img/tooltag-add.svg);
+  background-image: url(../../../staticfiles/admin/img/tooltag-add.svg);
   background-position: right 40px center;
 }
 
