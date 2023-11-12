@@ -35,7 +35,8 @@ class TourProgramAdmin(admin.ModelAdmin):
     list_filter = ['is_landmark', 'tour_days', 'tour_option', 'tour']
 
     def get_image_url(self, obj):
-        return mark_safe(f'<a href="{obj.image_url}" target="_blank">'
+        return mark_safe(f'<div>'
+						 f'<a href="{obj.image_url}" target="_blank">'
                          f'<img src="{obj.image_url}" width=auto height="120"></a>') if obj.image_url else None
 
     get_image_url.short_description = 'Зображення'
@@ -83,7 +84,8 @@ class TourDayOptionAdmin(TabbedTranslationAdmin):
     list_filter = ['is_landmark', 'date_start']
 
     def get_image_url(self, obj):
-        return mark_safe(f'<a href="{obj.image_url}" target="_blank">'
+        return mark_safe(f'<div>'
+						 f'<a href="{obj.image_url}" target="_blank">'
                          f'<img src="{obj.image_url}" width=auto height="60">') if obj.image_url else None
 
     get_image_url.short_description = 'Зображення'
@@ -108,7 +110,8 @@ class ImageAdmin(admin.ModelAdmin):
     list_filter = ['is_main', 'tour_image']
 
     def get_aws_image(self, obj):
-        return mark_safe(f'<a href="{obj.aws_url}" target="_blank">'
+        return mark_safe(f'<div>'
+						 f'<a href="{obj.aws_url}" target="_blank">'
                          f'<img src="{obj.aws_url}" width=auto height="120"></a>') if obj.aws_url else None
 
     get_aws_image.short_description = 'Зображення'
