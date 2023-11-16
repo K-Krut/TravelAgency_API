@@ -4,6 +4,7 @@
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/.gitignore
 /.idea/TravelAgency_API.iml
+/.env
 /images_faking/test.py
 /.idea/vcs.xml
 /.idea/dataSources.xml

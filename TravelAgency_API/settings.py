@@ -8,24 +8,16 @@ import os
 load_dotenv()
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-2jz4h_#35psowa*h(ofq%@%9q98syy8v!rw$_+s3=es-i^%z1s"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = [
     'ta-travel-agency-api-1bae69c42c2d.herokuapp.com',
     '127.0.0.1',
 ]
-
-# Application definition
 
 INSTALLED_APPS = [
     'travel_api.apps.TravelApiConfig',
@@ -47,7 +39,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DATETIME_FORMAT': '%Y-%m-%d',
     'ORDERING_PARAM': 'sort',
-    # 'EXCEPTION_HANDLER': 'travel_api.utils.custom_exception_handler',
 }
 
 MIDDLEWARE = [
@@ -66,7 +57,6 @@ MIDDLEWARE = [
 
 
 CORS_ORIGIN_ALLOW_ALL = True
-
 
 ROOT_URLCONF = "TravelAgency_API.urls"
 
@@ -89,25 +79,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "TravelAgency_API.wsgi.application"
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'd5GoRJdiCvx1FU9wPqvq',
-        'HOST': 'containers-us-west-119.railway.app',
-        'PORT': '7423',
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
-LIQPAY_PUBLIC_KEY = 'sandbox_i19318155047'
-LIQPAY_PRIVATE_KEY = 'sandbox_fO53arKOsERqttKl5RWMEohhDUJbvFxCyEy062iD'
+LIQPAY_PUBLIC_KEY = os.getenv('LIQPAY_PUBLIC_KEY')
+LIQPAY_PRIVATE_KEY = os.getenv('LIQPAY_PRIVATE_KEY')
 
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -124,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
 
 LANGUAGE_CODE = 'uk'
 
@@ -147,7 +132,6 @@ TIME_ZONE = "Europe/Kiev"
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -160,13 +144,15 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'ivmitqa@gmail.com'
-EMAIL_HOST_PASSWORD = 'hkjo icdy bewp kuoo'
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_ADMIN_RECIPIENT = "adm.ivm.it@gmail.com"
+
 
 BASE_URL = 'http://127.0.0.1:8000'
 BASE_CLIENT_URL = os.getenv('BASE_CLIENT_URL')
