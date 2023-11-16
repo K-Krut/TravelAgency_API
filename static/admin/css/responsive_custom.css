@@ -86,7 +86,7 @@ button {
   }
 
   #content-related {
-    margin-right: -290px;
+    margin-right: -310px !important;
   }
 
   .colSM #content-related {
@@ -527,7 +527,7 @@ button {
   #content-related,
   .colSM #content-related {
     width: 100%;
-    margin: 0;
+    margin: 0 !important;
   }
 
   #content-related .module {

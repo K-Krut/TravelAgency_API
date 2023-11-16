@@ -282,7 +282,7 @@ hr {
 }
 
 .mini {
-  font-size: 0.625rem;
+  font-size: 0.875rem;
 }
 
 .help,
@@ -316,7 +316,7 @@ td img {
 a.quiet:link,
 a.quiet:visited {
   color: var(--body-quiet-color);
-  font-weight: normal;
+  font-weight: 300;
 }
 
 .clear {
@@ -373,6 +373,7 @@ tfoot td {
   background: var(--body-bg);
   border: none;
   border-top: 1px solid var(--hairline-color);
+  /* border-top: unset; */
   border-bottom: 1px solid var(--hairline-color);
 }
 
@@ -386,8 +387,9 @@ thead th.required {
 }
 
 tbody tr {
-  border: 1px solid var(--hairline-color);
-  border-bottom: unset;
+  /* border: 1px solid var(--hairline-color);
+  border-bottom: unset; */
+  border: unset;
 }
 
 tbody tr:not(:last-child) {
@@ -413,7 +415,8 @@ tr:nth-child(odd) + .row-form-errors .errorlist {
 /* SORTABLE TABLES */
 
 thead {
-  border: 1px solid var(--hairline-color);
+  /* border: 1px solid var(--hairline-color); */
+  border-bottom: 1px solid var(--hairline-color);
 }
 
 thead th {
@@ -484,7 +487,8 @@ table thead th.sorted .sortoptions a {
   width: 14px;
   height: 14px;
   display: inline-block;
-  background: url(../../../staticfiles/admin/img/sorting-icons.svg) 0 0 no-repeat;
+  background: url(../../../staticfiles/admin/img/sorting-icons.svg) 0 0
+    no-repeat;
   background-size: 14px auto;
 }
 
@@ -726,22 +730,22 @@ ul.messagelist li {
   font-size: 0.8125rem;
   padding: 10px 10px 10px 65px;
   margin: 0 0 10px 0;
-  background: var(--message-success-bg) url(../img/icon-addlink-custom.svg) 40px 12px
-    no-repeat;
+  background: var(--message-success-bg) url(../img/icon-addlink-custom.svg) 40px
+    12px no-repeat;
   background-size: 16px auto;
   color: var(--body-fg);
   word-break: break-word;
 }
 
 ul.messagelist li.warning {
-  background: var(--message-warning-bg) url(../../../staticfiles/admin/img/icon-alert.svg) 40px 14px
-    no-repeat;
+  background: var(--message-warning-bg)
+    url(../../../staticfiles/admin/img/icon-alert.svg) 40px 14px no-repeat;
   background-size: 14px auto;
 }
 
 ul.messagelist li.error {
-  background: var(--message-error-bg) url(../../../staticfiles/admin/img/icon-no.svg) 40px 12px
-    no-repeat;
+  background: var(--message-error-bg)
+    url(../../../staticfiles/admin/img/icon-no.svg) 40px 12px no-repeat;
   background-size: 16px auto;
 }
 
@@ -841,7 +845,8 @@ div.breadcrumbs a:hover {
 .viewlink,
 .inlineviewlink {
   padding-left: 16px;
-  background: url(../../../staticfiles/admin/img/icon-viewlink.svg) 0 center no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-viewlink.svg) 0 center
+    no-repeat;
 }
 
 .addlink {
@@ -857,7 +862,8 @@ div.breadcrumbs a:hover {
 
 .deletelink {
   padding-left: 16px;
-  background: url(../../../staticfiles/admin/img/icon-deletelink.svg) 0 center no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-deletelink.svg) 0 center
+    no-repeat;
 }
 
 a.deletelink:link,
@@ -1175,8 +1181,12 @@ a.deletelink:hover {
   font-size: 1.125rem;
   font-weight: normal;
   color: var(--body-quiet-color);
-  padding: 0 40px;
+  padding: 0 40px 15px;
   margin: 0 0 15px;
+}
+
+#content-related h3:not(:last-child) {
+  border-bottom: 1px solid var(--darkened-bg);
 }
 
 #content-related h4 {
@@ -1192,13 +1202,24 @@ a.deletelink:hover {
 
 #content-related .actionlist {
   padding: 0;
-  margin: 16px;
+  margin: 0;
 }
 
 #content-related .actionlist li {
-  line-height: 1.2;
-  margin-bottom: 10px;
-  padding-left: 18px;
+  font-size: 1rem;
+  line-height: 120%;
+  margin-bottom: unset;
+  padding: 0 40px 15px 68px;
+  background-position: 40px 3px;
+}
+
+#content-related .actionlist li:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 15px;
+}
+
+#content-related .actionlist li a {
+  color: var(--primary);
 }
 
 #content-related .module h2 {
@@ -1208,7 +1229,7 @@ a.deletelink:hover {
   border-bottom: 1px solid var(--border-color);
   font-size: 1.25rem;
   text-transform: uppercase;
-  color: var(--body-fg);
+  color: #07020d;
 }
 
 .delete-confirmation #content {
