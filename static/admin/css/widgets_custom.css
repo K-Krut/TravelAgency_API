@@ -25,6 +25,8 @@
 .selector-chosen h2 {
   border: 1px solid var(--border-color);
   border-radius: 4px 4px 0 0;
+  background-color: var(--primary) !important;
+  color: var(--header-link-color) !important;
 }
 
 .selector-chosen .list-footer-display {
@@ -134,7 +136,7 @@
 }
 
 .selector-add {
-  background: url(../../../staticfiles/admin/img/selector-icons.svg) 0 -96px no-repeat;
+  background: url(../img/selector-icons.svg) 0 -96px no-repeat;
 }
 
 .active.selector-add:focus,
@@ -143,7 +145,7 @@
 }
 
 .selector-remove {
-  background: url(../../../staticfiles/admin/img/selector-icons.svg) 0 -64px no-repeat;
+  background: url(../img/selector-icons.svg) 0 -64px no-repeat;
 }
 
 .active.selector-remove:focus,
@@ -291,11 +293,12 @@ a.active.selector-clearall:hover {
 }
 
 .selector .selector-chosen .help-icon {
-  background: url(../../../staticfiles/admin/img/icon-unknown-alt.svg) 0 0 no-repeat;
+  background: url(../../../staticfiles/admin/img/icon-unknown-alt.svg) 0 0 /
+    cover no-repeat;
 }
 
 .selector .search-label-icon {
-  background: url(../img/search-custom.svg) 0 0 no-repeat;
+  background: url(../img/search-custom.svg) 0 0 / cover no-repeat;
   display: inline-block;
   height: 1.125rem;
   width: 1.125rem;
@@ -611,6 +614,7 @@ ul.timelist,
 .related-widget-wrapper {
   float: left; /* display properly in form rows with multiple fields */
   overflow: hidden; /* clear floated contents */
+  overflow-x: auto;
 }
 
 .related-widget-wrapper-link {

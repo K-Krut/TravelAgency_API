@@ -50,7 +50,7 @@
     /* --selected-bg: #1b1b1b; */
     --selected-bg: var(--darkened-bg);
     /* --selected-row: #00363a; */
-    --selected-row: var(--darkened-bg);
+    --selected-row: rgba(251, 249, 249, 0.65);
 
     /* --close-button-bg: #333333; */
     --close-button-bg: var(--primary);
@@ -110,7 +110,7 @@ html[data-theme="dark"] {
   /* --selected-bg: #1b1b1b; */
   --selected-bg: var(--darkened-bg);
   /* --selected-row: #00363a; */
-  --selected-row: var(--darkened-bg);
+  --selected-row: rgba(251, 249, 249, 0.65);
 
   /* --close-button-bg: #333333; */
   --close-button-bg: var(--primary);

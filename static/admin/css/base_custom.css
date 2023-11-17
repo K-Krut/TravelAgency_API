@@ -455,6 +455,7 @@ table thead th .text a {
 
 table thead th .text a:focus,
 table thead th .text a:hover {
+  color: #07020d;
   background: var(--selected-bg);
 }
 
@@ -584,6 +585,13 @@ textarea:focus,
 select:focus,
 .vTextField:focus {
   border-color: var(--body-quiet-color);
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--primary);
+  width: 1.625rem;
+  height: 1.625rem;
 }
 
 select {
