@@ -210,6 +210,7 @@ fieldset .fieldBox {
 .checkbox-row {
   flex-direction: row-reverse;
   justify-content: flex-end;
+  align-items: center;
 }
 
 /* WIDE FIELDSETS */
