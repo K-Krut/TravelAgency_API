@@ -75,7 +75,7 @@ class DetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('id', 'name', 'date_start', 'date_end', 'price', 'free_places', 'season', 'duration', 'images',
+        fields = ('id', 'name', 'description', 'date_start', 'date_end', 'price', 'free_places', 'season', 'duration', 'images',
                   'landmarks', 'program', 'options', 'additional_options')
 
     def get_images(self, obj):
