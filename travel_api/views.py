@@ -237,12 +237,14 @@ class OrderPaymentView(APIView):
             return JsonResponse({'error': 'Failed Order creation in DB. ' + str(e)}, status=500)
 
         try:
-            signature, data = get_liqpay_pay_data(request, order, tour)
-            return JsonResponse({"data": data, "signature": signature})
+            response_data = get_order_successful_response(order)
+            tour = Tour.objects.get(pk=order.tour.pk)
+            send_mail_("Admin, було успішно сформовано нове замовлення",
+                       generate_temporary_order_successful_email(order, tour, get_passengers_info(order)))
         except Exception as e:
-            send_mail_("Помилка при отриманні даних для оплати від LiqPay", str(e))
-            return JsonResponse({'error': 'Attempt to retrieve data for payment from Liqpay failed.' + str(e)},
-                                status=500)
+            return Response({"error": f"Can not get response info. {e}"}, status=500)
+
+        return Response(response_data, status=200)
 
 
 class CheckOrderCodeView(APIView):

@@ -168,6 +168,24 @@ def generate_order_successful_email(data, passengers):
            f"Пасажири:\n{passengers_info}"
 
 
+def generate_temporary_order_successful_email(order, tour, passengers):
+    passengers_info = "-"
+    if passengers:
+        passengers_info = "\n\n".join([f"Клієнт №{ind + 1}\n"
+                                       f"Імʼя: {passenger.get('name')} {passenger.get('surname')}\n"
+                                       f"{get_phone_info(passenger)}"
+                                       f"Місце: {passenger.get('place')}" for ind, passenger in
+                                       enumerate(passengers)])
+
+    return f"Admin, було сформовано нове замовлення\nДеталі замовлення:\n\n" \
+           f"Номер замовлення: {order.code}\n" \
+           f"Сплачена сума: {order.sum_paid} грн\n" \
+           f"Назва туру: {tour.name}\n" \
+           f"Дати: {tour.date_start} - {tour.date_end}\n\n" \
+           f"Пасажири:\n{passengers_info}\n\n\n\n" \
+           f"!!! СМС Повідомлення для замовника:\n\n{generate_sms(order)}"
+
+
 def get_primary_contact_of_order(order):
     return OrderItem.objects.get(order__code=order.code, is_primary_contact=True)
 
