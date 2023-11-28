@@ -1,15 +1,7 @@
 from itertools import groupby
 from django.utils.translation import get_language
-
 from rest_framework import serializers
-from django.forms.models import model_to_dict
-from django.db.models import F, ExpressionWrapper, fields, Count
 from .models import *
-import datetime
-
-
-def check_none(obj):
-    return None if obj is None else obj.aws_url
 
 
 class TourSerializer(serializers.ModelSerializer):
@@ -22,8 +14,8 @@ class TourSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
-
-        return main_image.aws_url if main_image else check_none(obj.images.filter().first())
+        image = main_image if main_image else obj.images.filter().first()
+        return image.aws_url.url if image else None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -42,7 +34,8 @@ class FeaturedSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         main_image = obj.images.filter(is_main=True).first()
-        return main_image.aws_url if main_image else None
+        image = main_image if main_image else obj.images.filter().first()
+        return image.aws_url.url if image else None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -53,6 +46,7 @@ class FeaturedSerializer(serializers.ModelSerializer):
 
 class SiteMapSerializer(serializers.ModelSerializer):
     time_update = serializers.DateTimeField(format='%Y-%m-%dT%H:%M:%S.%fZ')
+
     class Meta:
         model = Tour
         fields = ('id', 'time_update')
@@ -75,29 +69,44 @@ class DetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ('id', 'name', 'description', 'date_start', 'date_end', 'price', 'free_places', 'season', 'duration', 'images',
-                  'landmarks', 'program', 'options', 'additional_options')
+        fields = ('id', 'name', 'description', 'date_start', 'date_end', 'price', 'free_places',
+                  'season', 'duration', 'images', 'landmarks', 'program', 'options', 'additional_options')
 
     def get_images(self, obj):
-        return [image.aws_url for image in obj.images.all()]
+        return [image.aws_url.url for image in obj.images.all()]
 
     def get_landmarks(self, obj):
         language = get_language()
         landmarks = obj.program.filter(is_landmark=True)[:4]
-        result = [
+        return [
             {
                 "name": landmark.tour_option.name_ru if language == 'ru' and landmark.tour_option.name_ru else landmark.tour_option.name,
-                "image_url": landmark.tour_option.image_url
+                "image_url": landmark.tour_option.image_url.url
             }
             for landmark in landmarks
         ]
-        return result
 
     def get_additional_options(self, obj):
-        return obj.adoption.filter().values('icon', 'name')
+        language = get_language()
+        options = obj.adoption.all()
+        return [
+            {
+                "name": option.name_ru if language == 'ru' and option.name_ru else option.name,
+                "icon": option.icon.url if option.icon else None
+            }
+            for option in options
+        ]
 
     def get_options(self, obj):
-        return obj.option.filter().values('name', 'icon')
+        language = get_language()
+        options = obj.adoption.all()
+        return [
+            {
+                "name": option.name_ru if language == 'ru' and option.name_ru else option.name,
+                "icon": option.icon.url if option.icon else None
+            }
+            for option in options
+        ]
 
     def get_program(self, obj):
         tour_programs = obj.program.all().order_by('tour_days', 'order')
