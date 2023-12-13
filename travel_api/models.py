@@ -57,7 +57,7 @@ class Option(models.Model):
     time_update = models.DateTimeField(auto_now=True)
     is_landmark = models.BooleanField(null=True, default=False, blank=True)
     image_url = models.URLField(max_length=500, blank=True, null=True)
-    icon = models.URLField(max_length=500, null=True)
+    icon = models.ImageField(upload_to=f"options/", blank=True, null=True, verbose_name='Іконка')
 
     def __str__(self):
         return self.name
@@ -69,7 +69,7 @@ class Option(models.Model):
 class Image(models.Model):
     name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], null=True, default='image.png')
     tour_image = models.ForeignKey(to=Tour, related_name='images', on_delete=models.DO_NOTHING, null=True)
-    aws_url = models.CharField(max_length=255, verbose_name="Посилання на AWS")
+    aws_url = models.ImageField(upload_to=f"tours/", blank=True, null=True, verbose_name="Зображення")
     is_main = models.BooleanField(verbose_name='Головне фото')
     time_create = models.DateTimeField(auto_now_add=True, null=True)
     time_update = models.DateTimeField(auto_now=True, null=True)
@@ -86,7 +86,7 @@ class AdditionalOption(models.Model):
     name = models.CharField(max_length=255, verbose_name='Назва', validators=[MinLengthValidator(3)])
     description = models.TextField(verbose_name='Опис', blank=True)
     price = models.IntegerField(verbose_name='Ціна', validators=[MinValueValidator(0)])
-    icon = models.URLField(max_length=255, null=True, verbose_name='Іконка')
+    icon = models.ImageField(upload_to=f"additional_options/", blank=True, null=True, verbose_name='Іконка')
     tour = models.ManyToManyField(Tour, verbose_name='Тур', related_name='adoption', blank=True)
     time_create = models.DateTimeField(verbose_name='Дата створення', auto_now_add=True)
     time_update = models.DateTimeField(verbose_name='Дата створення', auto_now=True)
@@ -154,7 +154,7 @@ class OrderItem(models.Model):
 class TourDay(models.Model):
     day = models.CharField(max_length=255, verbose_name='Назва дня')
     description = models.TextField(blank=True, verbose_name='Опис дня (необязательно поле)')
-    photo = models.URLField(verbose_name='Фото')
+    photo = models.ImageField(upload_to=f"tour_day/", blank=True, null=True, verbose_name='Фото')
 
     def __str__(self):
         return str(self.day)
@@ -166,7 +166,7 @@ class TourDay(models.Model):
 class TourDayOption(models.Model):
     name = models.CharField(max_length=255, validators=[MinLengthValidator(3)], verbose_name='Назва')
     description = models.TextField(blank=True, verbose_name='Опис')
-    image_url = models.URLField(null=True, verbose_name='Зображення')
+    image_url = models.ImageField(upload_to=f"tour_day_options/", blank=True, null=True, verbose_name='Зображення')
     is_landmark = models.BooleanField(default=False, verbose_name='Визначне місце?')
     date_start = models.DateTimeField(blank=True, verbose_name='Дата початку')
     date_end = models.DateTimeField(blank=True, verbose_name='Дата кінця')
@@ -184,7 +184,7 @@ class TourProgram(models.Model):
     tour_option = models.ForeignKey(to=TourDayOption, on_delete=models.DO_NOTHING, verbose_name='Опція')
     order = models.IntegerField(validators=[MinValueValidator(0)], default=1, verbose_name='Порядок')
     is_landmark = models.BooleanField(default=False, verbose_name='Визначне місце?')
-    image_url = models.URLField(null=True, verbose_name='Зображення')
+    image_url = models.ImageField(upload_to=f"tour_program/", blank=True, null=True, verbose_name='Зображення')
 
     def __str__(self):
         return self.tour.name

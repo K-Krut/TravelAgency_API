@@ -13,18 +13,20 @@ class TourAdmin(TabbedTranslationAdmin):
 
     def formatted_date_start(self, obj):
         return formats.date_format(obj.date_start, "Y-m-d")
+
     formatted_date_start.short_description = 'Дата початку'
 
     def formatted_date_end(self, obj):
         return formats.date_format(obj.date_end, "Y-m-d")
+
     formatted_date_end.short_description = 'Дата кінця'
 
     def get_image(self, obj):
         main_image = obj.images.filter(is_main=True).first()
         image = main_image.aws_url if main_image else None
         return mark_safe(f'<div>'
-						 f'<a href="{image}" target="_blank">'
-                         f'<img src="{image}" width=auto height="100"></a>') if image else None
+                         f'<a href="{image.url}" target="_blank">'
+                         f'<img src="{image.url}" width=auto height="100"></a>') if image else None
 
     get_image.short_description = 'Зображення'
 
@@ -36,11 +38,10 @@ class TourProgramAdmin(admin.ModelAdmin):
 
     def get_image_url(self, obj):
         return mark_safe(f'<div>'
-						 f'<a href="{obj.image_url}" target="_blank">'
-                         f'<img src="{obj.image_url}" width=auto height="120"></a>') if obj.image_url else None
+                         f'<a href="{obj.image_url.url}" target="_blank">'
+                         f'<img src="{obj.image_url.url}" width=auto height="120"></a>') if obj.image_url else None
 
     get_image_url.short_description = 'Зображення'
-
 
 
 class TourDayAdmin(admin.ModelAdmin):
@@ -56,8 +57,8 @@ class AdditionalOptionAdmin(TabbedTranslationAdmin):
     list_filter = ['tour']
 
     def get_icon(self, obj):
-        return mark_safe(f'<a href="{obj.icon}" target="_blank">'
-                         f'<img src="{obj.icon}" width=auto height="60">') if obj.icon else None
+        return mark_safe(f'<a href="{obj.icon.url}" target="_blank">'
+                         f'<img src="{obj.icon.url}" width=auto height="60">') if obj.icon else None
 
     get_icon.short_description = 'Icon'
 
@@ -70,11 +71,10 @@ class OptionAdmin(TabbedTranslationAdmin):
     list_filter = ['tour']
 
     def get_icon(self, obj):
-        return mark_safe(f'<a href="{obj.icon}" target="_blank">'
-                         f'<img src="{obj.icon}" width=auto height="60">') if obj.icon else None
+        return mark_safe(f'<a href="{obj.icon.url}" target="_blank">'
+                         f'<img src="{obj.icon.url}" width=auto height="60">') if obj.icon else None
 
     get_icon.short_description = 'Icon'
-
 
 
 class TourDayOptionAdmin(TabbedTranslationAdmin):
@@ -85,8 +85,8 @@ class TourDayOptionAdmin(TabbedTranslationAdmin):
 
     def get_image_url(self, obj):
         return mark_safe(f'<div>'
-						 f'<a href="{obj.image_url}" target="_blank">'
-                         f'<img src="{obj.image_url}" width=auto height="60">') if obj.image_url else None
+                         f'<a href="{obj.image_url.url}" target="_blank">'
+                         f'<img src="{obj.image_url.url}" width=auto height="60">') if obj.image_url else None
 
     get_image_url.short_description = 'Зображення'
 
@@ -104,15 +104,14 @@ class SeasonAdmin(TabbedTranslationAdmin):
 
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_main', 'get_aws_image')
-    ordering = ['name', 'is_main']
-    search_fields = ['name']
+    list_display = ('is_main', 'get_aws_image', 'id')
+    ordering = ['time_create', 'is_main']
     list_filter = ['is_main', 'tour_image']
 
     def get_aws_image(self, obj):
         return mark_safe(f'<div>'
-						 f'<a href="{obj.aws_url}" target="_blank">'
-                         f'<img src="{obj.aws_url}" width=auto height="120"></a>') if obj.aws_url else None
+                         f'<a href="{obj.aws_url.url}" target="_blank">'
+                         f'<img src="{obj.aws_url.url}" width=auto height="120"></a>') if obj.aws_url else None
 
     get_aws_image.short_description = 'Зображення'
 
