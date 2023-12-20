@@ -193,7 +193,7 @@ def get_primary_contact_of_order(order):
 def generate_sms(order):
     passenger = get_primary_contact_of_order(order)
     return f"Привіт {passenger.name if passenger else ''}!\n" \
-           f"Дякуємо за замовлення на сайті /НАЗВА САЙТУ/\n" \
+           f"Дякуємо за замовлення на сайті iTour\n" \
            f"Деталі твого замовлення: {BASE_CLIENT_URL + f'uk/order-verification?order_code={order.code}'}\n" \
            f"Твій код для деталей замовлення: {passenger.verification_code}"
 
