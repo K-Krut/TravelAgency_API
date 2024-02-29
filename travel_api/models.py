@@ -168,8 +168,8 @@ class TourDayOption(models.Model):
     description = models.TextField(blank=True, verbose_name='Опис')
     image_url = models.ImageField(upload_to=f"tour_day_options/", blank=True, null=True, verbose_name='Зображення')
     is_landmark = models.BooleanField(default=False, verbose_name='Визначне місце?')
-    date_start = models.DateTimeField(blank=True, verbose_name='Дата початку')
-    date_end = models.DateTimeField(blank=True, verbose_name='Дата кінця')
+    date_start = models.DateTimeField(blank=True, null=True, verbose_name='Дата початку')
+    date_end = models.DateTimeField(blank=True, null=True, verbose_name='Дата кінця')
 
     def __str__(self):
         return self.name
