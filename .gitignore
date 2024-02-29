@@ -13,3 +13,4 @@
 /.DS_Store
 /images_faking/.DS_Store
 /.env
+/travel_api/management/commands/test.py
